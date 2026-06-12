@@ -1,14 +1,9 @@
 // api/soal.js — POST /api/soal
-// Menerima { examType, subtest } dan generate soal untuk SATU subtest saja.
-// Dipanggil berkali-kali dari frontend (satu request per subtest).
-// Setiap request selesai < 15 detik, jauh di bawah limit Vercel 60 detik.
+// Body: { examType, subtest, count }
+// Generate soal untuk SATU subtest sejumlah `count` (default 10).
+// Dipanggil berkali-kali dari frontend (batch 10 soal), tidak pernah timeout.
 
 const { handleCors, sendSuccess, sendError, createGroqClient, safeParseJSON } = require('../lib/utils');
-
-const SOAL_CONFIG = {
-  skd: { TWK: 10, TIU: 10, TKP: 10 },
-  skb: { SKB: 15 },
-};
 
 const MODEL = 'llama-3.1-8b-instant';
 
@@ -21,7 +16,7 @@ Output HANYA array JSON tanpa markdown:
 
   TIU: `Anda adalah pembuat soal CAT CPNS ahli untuk Tes Intelejensi Umum (TIU).
 Buat soal untuk: analogi kata, sinonim/antonim (KBBI), deret angka, aritmatika (jual-beli, kecepatan, persentase), silogisme.
-Aturan: hitung ulang semua jawaban numerik, satu jawaban benar, pengecoh dekat dengan jawaban benar, bisa dikerjakan tanpa kalkulator.
+Aturan: hitung ulang semua jawaban numerik, satu jawaban benar, pengecoh dekat jawaban benar, bisa dikerjakan tanpa kalkulator.
 Output HANYA array JSON tanpa markdown:
 [{"id":1,"subtest":"TIU","subtestFull":"Tes Intelejensi Umum","tipe":"pilihan_ganda","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"kunciJawaban":"C","nilai":{"benar":5,"salah":0}}]`,
 
@@ -38,29 +33,22 @@ Output HANYA array JSON tanpa markdown:
 [{"id":1,"subtest":"SKB","subtestFull":"Seleksi Kompetensi Bidang","tipe":"pilihan_ganda","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"kunciJawaban":"C","nilai":{"benar":5,"salah":0}}]`,
 };
 
+const VALID = {
+  skd: ['TWK','TIU','TKP'],
+  skb: ['SKB'],
+};
+
 module.exports = async function handler(req, res) {
   if (handleCors(req, res)) return;
   if (req.method !== 'POST') return sendError(res, 'Gunakan POST.', 405);
 
-  const { examType, subtest } = req.body || {};
+  const { examType, subtest, count: countRaw } = req.body || {};
+  const type  = (examType || '').toLowerCase();
+  const sub   = (subtest  || '').toUpperCase();
+  const count = Math.min(15, Math.max(1, parseInt(countRaw || '10', 10)));
 
-  if (!examType || !['skd','skb'].includes(examType.toLowerCase())) {
-    return sendError(res, '"examType" harus "skd" atau "skb".', 400);
-  }
-
-  const type    = examType.toLowerCase();
-  const config  = SOAL_CONFIG[type];
-  const validSubs = Object.keys(config);
-
-  // Jika subtest tidak dikirim, ambil semua (tapi hanya untuk SKB yang cuma 1 subtest)
-  const subtestKey = subtest ? subtest.toUpperCase() : validSubs[0];
-
-  if (!validSubs.includes(subtestKey)) {
-    return sendError(res, `"subtest" untuk ${type} harus salah satu dari: ${validSubs.join(', ')}.`, 400);
-  }
-
-  const count        = config[subtestKey];
-  const systemPrompt = SYSTEM_PROMPTS[subtestKey];
+  if (!VALID[type])       return sendError(res, '"examType" harus "skd" atau "skb".', 400);
+  if (!VALID[type].includes(sub)) return sendError(res, `"subtest" harus salah satu dari: ${VALID[type].join(', ')}.`, 400);
 
   try {
     const groq  = createGroqClient();
@@ -69,8 +57,8 @@ module.exports = async function handler(req, res) {
     const completion = await groq.chat.completions.create({
       model,
       messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user',   content: `Buat tepat ${count} soal ${subtestKey} dengan topik yang bervariasi. Output HANYA array JSON valid.` },
+        { role: 'system', content: SYSTEM_PROMPTS[sub] },
+        { role: 'user',   content: `Buat tepat ${count} soal ${sub} dengan topik yang bervariasi. Output HANYA array JSON valid.` },
       ],
       temperature: 0.7,
       max_tokens:  6000,
@@ -80,25 +68,23 @@ module.exports = async function handler(req, res) {
     const raw  = completion.choices?.[0]?.message?.content || '';
     let parsed = safeParseJSON(raw);
 
-    // Normalisasi ke array
     if (!Array.isArray(parsed)) {
       const key = ['questions','soal','data'].find(k => Array.isArray(parsed[k]))
         || Object.keys(parsed).find(k => Array.isArray(parsed[k]));
       parsed = key ? parsed[key] : [];
     }
 
-    if (parsed.length === 0) throw new Error('Tidak ada soal yang dihasilkan.');
+    if (!parsed.length) throw new Error('Tidak ada soal yang dihasilkan.');
 
-    // Tambah field nilai jika tidak ada
     parsed.forEach((q, i) => {
       q.id    = i + 1;
       q.nilai = q.nilai || { benar: 5, salah: 0 };
     });
 
-    return sendSuccess(res, { examType: type, subtest: subtestKey, count: parsed.length, questions: parsed });
+    return sendSuccess(res, { examType: type, subtest: sub, count: parsed.length, questions: parsed });
 
   } catch (err) {
-    if (err.status === 429) return sendError(res, 'Rate limit Groq. Tunggu sebentar lalu coba lagi.', 429);
+    if (err.status === 429) return sendError(res, 'Rate limit Groq. Tunggu sebentar.', 429);
     if (err.status === 401) return sendError(res, 'GROQ_API_KEY tidak valid.', 401);
     return sendError(res, 'Gagal generate soal: ' + err.message, 500);
   }
