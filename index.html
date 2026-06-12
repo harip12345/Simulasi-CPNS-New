@@ -1106,18 +1106,19 @@ function hideLoading() {
 }
 
 /* ==============================================================
-   KONFIGURASI API
-   ─────────────────────────────────────────────────────────────
-   ⚙️  LANGKAH INTEGRASI API ASLI:
-   
-   1. Deploy folder `cat-cpns-api/` ke Vercel (lihat README.md)
-   2. Salin URL deployment Vercel Anda (misal: https://cat-cpns-api.vercel.app)
-   3. Tempelkan URL tersebut ke variabel API_BASE_URL di bawah ini
-   4. Hapus / comment bagian FALLBACK_MOCK_DATA jika tidak diperlukan lagi
-   ─────────────────────────────────────────────────────────────
+   KONFIGURASI GROQ — Panggil langsung dari browser (tanpa Vercel)
+   ✔️ Tidak ada timeout, tidak perlu server backend
+   ⚙️  Isi GROQ_API_KEY Anda di bawah (dari console.groq.com)
 ============================================================== */
-const API_BASE_URL = 'https://cat-cpns-api.vercel.app';
-const USE_MOCK_FALLBACK = false;
+const GROQ_API_KEY = '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'; // gsk_xxxx...
+const GROQ_MODEL   = 'llama-3.1-8b-instant';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+// Jumlah soal per subtest (bisa dinaikkan sesuka hati, tidak ada timeout)
+const SOAL_CONFIG = {
+  skd: { TWK: 10, TIU: 10, TKP: 10 },
+  skb: { SKB: 15 },
+};
 
 /* ==============================================================
    LOADING MESSAGES — Pesan animasi saat menunggu AI generate soal
@@ -1142,30 +1143,111 @@ const LOADING_MESSAGES = {
 };
 
 /* ==============================================================
-   FETCH DARI API ASLI (Vercel + Groq)
+   SYSTEM PROMPTS per subtest
+============================================================== */
+const SYSTEM_PROMPTS = {
+  TWK: `Anda adalah pembuat soal CAT CPNS ahli untuk Tes Wawasan Kebangsaan (TWK).
+Buat soal pilihan ganda berkualitas tinggi tentang: Pancasila, UUD 1945, NKRI, Bhinneka Tunggal Ika, sejarah kemerdekaan, sistem pemerintahan.
+Aturan ketat:
+- Satu jawaban benar secara objektif
+- 4 pengecoh masuk akal namun salah
+- Bahasa Indonesia baku
+- Referensi hukum/sejarah akurat
+Output HANYA array JSON, tanpa markdown, tanpa komentar:
+[{"id":1,"subtest":"TWK","subtestFull":"Tes Wawasan Kebangsaan","tipe":"pilihan_ganda","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"kunciJawaban":"B","nilai":{"benar":5,"salah":0}}]`,
+  TIU: `Anda adalah pembuat soal CAT CPNS ahli untuk Tes Intelejensi Umum (TIU).
+Buat soal pilihan ganda untuk: analogi kata, sinonim/antonim (KBBI), deret angka, aritmatika (jual-beli, kecepatan, persentase), silogisme.
+Aturan ketat:
+- Hitung ulang semua jawaban numerik sebelum output
+- Satu jawaban benar secara matematis/logis
+- Pengecoh berupa angka/kata yang dekat dengan jawaban benar
+- Semua soal bisa dikerjakan tanpa kalkulator dalam 2 menit
+Output HANYA array JSON, tanpa markdown, tanpa komentar:
+[{"id":1,"subtest":"TIU","subtestFull":"Tes Intelejensi Umum","tipe":"pilihan_ganda","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"kunciJawaban":"C","nilai":{"benar":5,"salah":0}}]`,
+  TKP: `Anda adalah pembuat soal CAT CPNS ahli untuk Tes Karakteristik Pribadi (TKP).
+Buat skenario situasional ASN yang mengukur: pelayanan publik, integritas, kerja tim, inovasi, profesionalisme.
+Aturan ketat:
+- Semua 5 opsi HARUS masuk akal (tidak ada yang jelas bodoh/jahat)
+- Skor 5=terbaik, 4=baik, 3=cukup, 2=kurang, 1=tidak tepat — masing-masing TEPAT SATU opsi
+- Opsi skor 4 dan 5 harus mirip tapi berbeda pada satu nuansa penting
+- Skenario realistis di kantor pemerintahan
+Output HANYA array JSON, tanpa markdown, tanpa komentar:
+[{"id":1,"subtest":"TKP","subtestFull":"Tes Karakteristik Pribadi","tipe":"tkp","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"nilaiOpsi":{"A":3,"B":5,"C":1,"D":4,"E":2}}]`,
+  SKB: `Anda adalah pembuat soal CAT CPNS ahli untuk Seleksi Kompetensi Bidang (SKB) bidang administrasi ASN.
+Buat soal tentang: UU ASN No.20/2023, manajemen kinerja, disiplin ASN, pelayanan publik, SAKIP, pengadaan barang/jasa.
+Aturan ketat:
+- Referensi peraturan yang masih berlaku dan spesifik
+- Satu jawaban benar secara hukum/teknis
+- Pengecoh terlihat meyakinkan tapi salah secara teknis
+- Variasikan antara soal faktual dan kasus aplikatif
+Output HANYA array JSON, tanpa markdown, tanpa komentar:
+[{"id":1,"subtest":"SKB","subtestFull":"Seleksi Kompetensi Bidang","tipe":"pilihan_ganda","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"kunciJawaban":"C","nilai":{"benar":5,"salah":0}}]`,
+};
+
+/* ==============================================================
+   FETCH LANGSUNG KE GROQ API (dari browser, tanpa backend)
+   Tidak ada timeout Vercel, tidak ada server yang diperlukan.
 ============================================================== */
 async function fetchFromAPI(examType) {
-  const url = API_BASE_URL.trim().replace(/\/$/, '') + '/api/soal';
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ examType }),
-  });
-
-  if (!res.ok) {
-    const errBody = await res.json().catch(() => ({}));
-    throw new Error(
-      `API error ${res.status}: ${errBody.error || res.statusText}`
-    );
+  if (!GROQ_API_KEY || GROQ_API_KEY.startsWith('GANTI')) {
+    throw new Error('GROQ_API_KEY belum diisi! Buka file HTML, cari GROQ_API_KEY dan isi dengan kunci dari console.groq.com');
   }
 
-  const data = await res.json();
-  if (!data.success || !Array.isArray(data.questions)) {
-    throw new Error('Response API tidak valid: field "questions" tidak ditemukan.');
+  const config = SOAL_CONFIG[examType];
+  const allQuestions = [];
+  let globalId = 1;
+
+  for (const [subtest, count] of Object.entries(config)) {
+    const systemPrompt = SYSTEM_PROMPTS[subtest];
+    const userPrompt = `Buat tepat ${count} soal ${subtest}. Topik harus bervariasi. Output HANYA array JSON valid, langsung tanpa pembuka/penutup.`;
+
+    const res = await fetch(GROQ_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + GROQ_API_KEY,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user',   content: userPrompt },
+        ],
+        temperature: 0.7,
+        max_tokens: 6000,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(`Groq error ${res.status}: ${err.error?.message || res.statusText}`);
+    }
+
+    const data = await res.json();
+    const raw  = data.choices?.[0]?.message?.content || '';
+
+    // Parse JSON — bersihkan markdown fence jika ada
+    const cleaned = raw.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
+    let questions;
+    try {
+      questions = JSON.parse(cleaned);
+      if (!Array.isArray(questions)) {
+        const key = Object.keys(questions).find(k => Array.isArray(questions[k]));
+        questions = key ? questions[key] : [];
+      }
+    } catch(e) {
+      throw new Error(`Gagal parse JSON dari Groq untuk ${subtest}. Coba lagi.`);
+    }
+
+    // Assign ID global dan pastikan field nilai ada
+    questions.forEach(q => {
+      q.id    = globalId++;
+      q.nilai = q.nilai || { benar: 5, salah: 0 };
+    });
+    allQuestions.push(...questions);
   }
 
-  return data.questions;
+  return allQuestions;
 }
 
 /* ==============================================================
@@ -1392,21 +1474,12 @@ async function startExam(examType) {
   try {
     let questions;
 
-    // ── Pilih sumber data: API asli atau mock fallback ──────
-    if (API_BASE_URL && !USE_MOCK_FALLBACK) {
-      // MODE PRODUKSI: Ambil soal dari Vercel API
+    // Ambil soal langsung dari Groq (browser → Groq API)
+    try {
       questions = await fetchFromAPI(examType);
-    } else if (API_BASE_URL) {
-      // MODE HYBRID: Coba API dulu, fallback ke mock jika gagal
-      try {
-        questions = await fetchFromAPI(examType);
-      } catch (apiErr) {
-        console.warn('API gagal, menggunakan mock data:', apiErr.message);
-        updateLoadingMsg('API tidak tersedia, menggunakan soal lokal...');
-        questions = await loadMockData(examType);
-      }
-    } else {
-      // MODE DEVELOPMENT: Langsung pakai mock data
+    } catch (apiErr) {
+      console.warn('Groq gagal, fallback ke mock:', apiErr.message);
+      updateLoadingMsg('Menggunakan soal cadangan...');
       questions = await loadMockData(examType);
     }
 
