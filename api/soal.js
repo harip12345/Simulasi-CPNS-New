@@ -1,122 +1,105 @@
 // api/soal.js — POST /api/soal
-// Jumlah soal dikurangi agar tidak timeout di Vercel Free (maks 60 detik).
-// SKD: 10+12+13=35 soal. SKB: 20 soal.
-// Vercel Pro bisa naikkan maxDuration ke 300 detik dan jumlah soal dinaikkan lagi.
+// Menerima { examType, subtest } dan generate soal untuk SATU subtest saja.
+// Dipanggil berkali-kali dari frontend (satu request per subtest).
+// Setiap request selesai < 15 detik, jauh di bawah limit Vercel 60 detik.
 
-const {
-  handleCors, sendSuccess, sendError,
-  createGroqClient, safeParseJSON, validateQuestions,
-} = require('../lib/utils');
-const { SYSTEM_PROMPTS, buildUserPrompt } = require('../lib/prompts');
+const { handleCors, sendSuccess, sendError, createGroqClient, safeParseJSON } = require('../lib/utils');
 
 const SOAL_CONFIG = {
-  skd: { TWK: 5, TIU: 5, TKP: 5 },
-  skb: { SKB: 10 },
+  skd: { TWK: 10, TIU: 10, TKP: 10 },
+  skb: { SKB: 15 },
 };
 
-// Batch besar = sedikit round-trip = lebih cepat
-const BATCH_SIZE = 10;
-const DEFAULT_MODEL = 'llama-3.1-8b-instant';
+const MODEL = 'llama-3.1-8b-instant';
+
+const SYSTEM_PROMPTS = {
+  TWK: `Anda adalah pembuat soal CAT CPNS ahli untuk Tes Wawasan Kebangsaan (TWK).
+Buat soal pilihan ganda berkualitas tinggi tentang: Pancasila, UUD 1945, NKRI, Bhinneka Tunggal Ika, sejarah kemerdekaan, sistem pemerintahan.
+Aturan: satu jawaban benar objektif, 4 pengecoh masuk akal, bahasa Indonesia baku, referensi akurat.
+Output HANYA array JSON tanpa markdown:
+[{"id":1,"subtest":"TWK","subtestFull":"Tes Wawasan Kebangsaan","tipe":"pilihan_ganda","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"kunciJawaban":"B","nilai":{"benar":5,"salah":0}}]`,
+
+  TIU: `Anda adalah pembuat soal CAT CPNS ahli untuk Tes Intelejensi Umum (TIU).
+Buat soal untuk: analogi kata, sinonim/antonim (KBBI), deret angka, aritmatika (jual-beli, kecepatan, persentase), silogisme.
+Aturan: hitung ulang semua jawaban numerik, satu jawaban benar, pengecoh dekat dengan jawaban benar, bisa dikerjakan tanpa kalkulator.
+Output HANYA array JSON tanpa markdown:
+[{"id":1,"subtest":"TIU","subtestFull":"Tes Intelejensi Umum","tipe":"pilihan_ganda","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"kunciJawaban":"C","nilai":{"benar":5,"salah":0}}]`,
+
+  TKP: `Anda adalah pembuat soal CAT CPNS ahli untuk Tes Karakteristik Pribadi (TKP).
+Buat skenario situasional ASN: pelayanan publik, integritas, kerja tim, inovasi, profesionalisme.
+Aturan KETAT: semua 5 opsi masuk akal, skor {1,2,3,4,5} masing-masing tepat SATU opsi, skenario realistis di kantor pemerintahan.
+Output HANYA array JSON tanpa markdown:
+[{"id":1,"subtest":"TKP","subtestFull":"Tes Karakteristik Pribadi","tipe":"tkp","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"nilaiOpsi":{"A":3,"B":5,"C":1,"D":4,"E":2}}]`,
+
+  SKB: `Anda adalah pembuat soal CAT CPNS ahli untuk Seleksi Kompetensi Bidang (SKB) administrasi ASN.
+Buat soal tentang: UU ASN No.20/2023, manajemen kinerja, disiplin ASN, pelayanan publik, SAKIP, pengadaan barang/jasa.
+Aturan: referensi peraturan masih berlaku, satu jawaban benar secara hukum, pengecoh meyakinkan tapi salah teknis.
+Output HANYA array JSON tanpa markdown:
+[{"id":1,"subtest":"SKB","subtestFull":"Seleksi Kompetensi Bidang","tipe":"pilihan_ganda","text":"...","options":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"kunciJawaban":"C","nilai":{"benar":5,"salah":0}}]`,
+};
 
 module.exports = async function handler(req, res) {
   if (handleCors(req, res)) return;
   if (req.method !== 'POST') return sendError(res, 'Gunakan POST.', 405);
 
-  const { examType } = req.body || {};
-  if (!examType || !['skd', 'skb'].includes(examType.toLowerCase())) {
-    return sendError(res, 'Parameter "examType" harus "skd" atau "skb".', 400);
+  const { examType, subtest } = req.body || {};
+
+  if (!examType || !['skd','skb'].includes(examType.toLowerCase())) {
+    return sendError(res, '"examType" harus "skd" atau "skb".', 400);
   }
 
-  const normalizedType = examType.toLowerCase();
-  const config = SOAL_CONFIG[normalizedType];
-  console.log(`[soal.js] Request: examType=${normalizedType}`);
+  const type    = examType.toLowerCase();
+  const config  = SOAL_CONFIG[type];
+  const validSubs = Object.keys(config);
+
+  // Jika subtest tidak dikirim, ambil semua (tapi hanya untuk SKB yang cuma 1 subtest)
+  const subtestKey = subtest ? subtest.toUpperCase() : validSubs[0];
+
+  if (!validSubs.includes(subtestKey)) {
+    return sendError(res, `"subtest" untuk ${type} harus salah satu dari: ${validSubs.join(', ')}.`, 400);
+  }
+
+  const count        = config[subtestKey];
+  const systemPrompt = SYSTEM_PROMPTS[subtestKey];
 
   try {
     const groq  = createGroqClient();
-    const model = process.env.GROQ_MODEL || DEFAULT_MODEL;
-    const allQuestions = [];
-    let globalId = 1;
+    const model = process.env.GROQ_MODEL || MODEL;
 
-    for (const [subtestKey, totalCount] of Object.entries(config)) {
-      console.log(`[soal.js] Generating ${totalCount} soal ${subtestKey}...`);
-      const questions = await generateSubtestQuestions(groq, model, subtestKey, totalCount);
-      questions.forEach(q => {
-        q.id   = globalId++;
-        q.nilai = q.nilai || { benar: 5, salah: 0 };
-      });
-      allQuestions.push(...questions);
-    }
-
-    return sendSuccess(res, {
-      examType: normalizedType,
-      totalSoal: allQuestions.length,
+    const completion = await groq.chat.completions.create({
       model,
-      questions: allQuestions,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: `Buat tepat ${count} soal ${subtestKey} dengan topik yang bervariasi. Output HANYA array JSON valid.` },
+      ],
+      temperature: 0.7,
+      max_tokens:  6000,
+      response_format: { type: 'json_object' },
     });
 
+    const raw  = completion.choices?.[0]?.message?.content || '';
+    let parsed = safeParseJSON(raw);
+
+    // Normalisasi ke array
+    if (!Array.isArray(parsed)) {
+      const key = ['questions','soal','data'].find(k => Array.isArray(parsed[k]))
+        || Object.keys(parsed).find(k => Array.isArray(parsed[k]));
+      parsed = key ? parsed[key] : [];
+    }
+
+    if (parsed.length === 0) throw new Error('Tidak ada soal yang dihasilkan.');
+
+    // Tambah field nilai jika tidak ada
+    parsed.forEach((q, i) => {
+      q.id    = i + 1;
+      q.nilai = q.nilai || { benar: 5, salah: 0 };
+    });
+
+    return sendSuccess(res, { examType: type, subtest: subtestKey, count: parsed.length, questions: parsed });
+
   } catch (err) {
-    console.error('[soal.js] Error:', err.message);
-    if (err.status === 429) return sendError(res, 'Rate limit Groq. Coba lagi.', 429);
+    if (err.status === 429) return sendError(res, 'Rate limit Groq. Tunggu sebentar lalu coba lagi.', 429);
     if (err.status === 401) return sendError(res, 'GROQ_API_KEY tidak valid.', 401);
     return sendError(res, 'Gagal generate soal: ' + err.message, 500);
   }
 };
-
-async function generateSubtestQuestions(groq, model, subtestKey, totalCount) {
-  const maxRetries = parseInt(process.env.MAX_RETRIES || '2', 10);
-  const allQuestions = [];
-  const usedTopics   = [];
-  const batches = Math.ceil(totalCount / BATCH_SIZE);
-
-  for (let b = 0; b < batches; b++) {
-    const batchCount = Math.min(BATCH_SIZE, totalCount - allQuestions.length);
-    let success = false;
-
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      try {
-        const questions = await generateBatch(groq, model, subtestKey, batchCount, usedTopics);
-        const tipe = subtestKey === 'TKP' ? 'tkp' : 'pg';
-        validateQuestions(questions, tipe);
-        questions.forEach(q => { if (q.topik) usedTopics.push(q.topik); });
-        allQuestions.push(...questions);
-        success = true;
-        break;
-      } catch (err) {
-        console.warn(`[soal.js] Batch ${b+1} attempt ${attempt+1} gagal: ${err.message}`);
-        if (attempt === maxRetries) throw new Error(`Gagal setelah ${maxRetries+1}x: ${err.message}`);
-        await new Promise(r => setTimeout(r, 800 * Math.pow(2, attempt)));
-      }
-    }
-    if (!success) break;
-    if (b < batches - 1) await new Promise(r => setTimeout(r, 300));
-  }
-  return allQuestions;
-}
-
-async function generateBatch(groq, model, subtestKey, count, usedTopics) {
-  const completion = await groq.chat.completions.create({
-    model,
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPTS[subtestKey] },
-      { role: 'user',   content: buildUserPrompt(subtestKey, count, usedTopics) },
-    ],
-    temperature: 0.7,
-    max_tokens:  4096,
-    top_p:       0.9,
-    stream:      false,
-    response_format: { type: 'json_object' },
-  });
-
-  const raw = completion.choices?.[0]?.message?.content;
-  if (!raw) throw new Error('Groq response kosong.');
-
-  let parsed = safeParseJSON(raw);
-  if (Array.isArray(parsed)) return parsed;
-
-  // Normalisasi berbagai bentuk output
-  const arrayKey = ['questions','soal','data'].find(k => Array.isArray(parsed[k]))
-    || Object.keys(parsed).find(k => Array.isArray(parsed[k]));
-  if (arrayKey) return parsed[arrayKey];
-
-  throw new Error('Output tidak mengandung array soal. Raw: ' + raw.substring(0, 150));
-}
