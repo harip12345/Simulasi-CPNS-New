@@ -217,6 +217,57 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 
 .btn-selesai-final{background:var(--red);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:.84rem;font-weight:700;cursor:pointer;margin-left:auto;animation:pulse-red 1.5s infinite}
 @keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.5)}70%{box-shadow:0 0 0 8px rgba(192,57,43,0)}}
+/* ═══ MODAL NAMA ═══════════════════════════════════════════ */
+.modal-nama-body{padding:22px}
+.modal-nama-body h3{font-size:1rem;font-weight:800;margin-bottom:6px}
+.modal-nama-body p{font-size:.82rem;color:var(--textsub);margin-bottom:16px;line-height:1.5}
+.input-nama{width:100%;padding:11px 14px;border:2px solid var(--border);border-radius:8px;font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s}
+.input-nama:focus{border-color:var(--blue2)}
+.exam-select-btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.exam-select-btn{padding:11px;border:2px solid var(--border);background:#fff;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:10px}
+.exam-select-btn:hover{border-color:var(--blue2);background:#f0f4ff}
+.exam-select-btn.skb:hover{border-color:var(--green);background:#edfaf3}
+.exam-select-btn .btn-icon{font-size:1.2rem}
+.exam-select-btn .btn-info{flex:1}
+.exam-select-btn .btn-title{font-weight:700;font-size:.9rem}
+.exam-select-btn .btn-sub{font-size:.75rem;color:var(--textsub);margin-top:2px}
+
+/* ═══ VIEW LEADERBOARD ═══════════════════════════════════════ */
+#view-leaderboard{min-height:calc(100vh - 58px);background:var(--light)}
+.lb-container{max-width:800px;margin:0 auto;padding:32px 18px 60px}
+.lb-header{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-radius:14px;padding:28px 24px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+.lb-header-icon{font-size:2.5rem}
+.lb-header-text h2{font-size:1.3rem;font-weight:800;margin-bottom:4px}
+.lb-header-text p{font-size:.85rem;opacity:.82}
+.lb-tabs{display:flex;gap:8px;margin-bottom:20px;background:#fff;border-radius:10px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.lb-tab{flex:1;padding:8px;border:none;border-radius:7px;font-size:.85rem;font-weight:600;cursor:pointer;background:transparent;color:var(--textsub);transition:all .15s}
+.lb-tab.active{background:var(--blue);color:#fff}
+.lb-tab.skb.active{background:var(--green)}
+.lb-back{display:inline-flex;align-items:center;gap:6px;color:var(--blue2);font-size:.85rem;font-weight:600;cursor:pointer;background:none;border:none;margin-bottom:20px}
+.lb-table-wrap{background:#fff;border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.lb-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.lb-table thead tr{background:var(--blue)}
+.lb-table th{color:#fff;padding:11px 14px;text-align:left;font-weight:600;font-size:.8rem}
+.lb-table td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.lb-table tr:last-child td{border-bottom:none}
+.lb-table tr:hover td{background:var(--light)}
+.lb-rank{font-weight:800;font-size:1rem;color:var(--textsub);text-align:center}
+.lb-rank.gold{color:#f59e0b}
+.lb-rank.silver{color:#9ca3af}
+.lb-rank.bronze{color:#b45309}
+.medal{font-size:1.1rem}
+.lb-nama{font-weight:700;color:var(--text)}
+.lb-skor{font-weight:800;color:var(--blue);font-size:1rem}
+.lb-status{font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.lb-status.lulus{background:#d4f4e2;color:var(--green)}
+.lb-status.tidak{background:#fde8e7;color:var(--red)}
+.lb-waktu{font-size:.75rem;color:var(--textsub)}
+.lb-empty{text-align:center;padding:40px;color:var(--textsub)}
+.lb-empty .lb-empty-icon{font-size:3rem;margin-bottom:10px}
+.lb-refresh{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:600;cursor:pointer;margin-bottom:16px}
+.lb-refresh:hover{opacity:.88}
+.lb-loading{text-align:center;padding:32px;color:var(--textsub);font-size:.88rem}
+
 @media(max-width:768px){
   .exam-layout{grid-template-columns:1fr}
   .nav-panel{border-left:none;border-top:2px solid var(--border);height:auto;position:static;order:-1}
@@ -287,6 +338,48 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
   </div>
 </nav>
 
+<!-- MODAL INPUT NAMA -->
+<div class="modal-overlay" id="modal-nama">
+  <div class="modal-box">
+    <div class="modal-header">👤 Identitas Peserta</div>
+    <div class="modal-nama-body">
+      <h3>Masukkan nama Anda</h3>
+      <p>Nama akan ditampilkan di papan peringkat setelah ujian selesai.</p>
+      <input type="text" id="input-nama" class="input-nama" placeholder="Nama lengkap Anda..." maxlength="50" autocomplete="off"/>
+      <div class="exam-select-btns" id="exam-select-btns">
+        <button class="exam-select-btn" onclick="startFromModal('skd','TWK')">
+          <span class="btn-icon">📝</span>
+          <div class="btn-info">
+            <div class="btn-title">SKD — Mulai dari TWK</div>
+            <div class="btn-sub">TWK → TIU → TKP · Timer 100 menit</div>
+          </div>
+        </button>
+        <button class="exam-select-btn" onclick="startFromModal('skd','TIU')">
+          <span class="btn-icon">🧮</span>
+          <div class="btn-info">
+            <div class="btn-title">SKD — Mulai dari TIU</div>
+            <div class="btn-sub">Langsung ke Tes Intelejensi Umum</div>
+          </div>
+        </button>
+        <button class="exam-select-btn" onclick="startFromModal('skd','TKP')">
+          <span class="btn-icon">🤝</span>
+          <div class="btn-info">
+            <div class="btn-title">SKD — Mulai dari TKP</div>
+            <div class="btn-sub">Langsung ke Tes Karakteristik Pribadi</div>
+          </div>
+        </button>
+        <button class="exam-select-btn skb" onclick="startFromModal('skb','SKB')">
+          <span class="btn-icon">📊</span>
+          <div class="btn-info">
+            <div class="btn-title">SKB — Akuntansi</div>
+            <div class="btn-sub">Kompetensi Bidang Akuntansi · Timer 90 menit</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ VIEW 1: MENU ══════════════════════════════════════════ -->
 <div id="view-menu" class="view active">
   <div class="hero-banner">
@@ -301,9 +394,9 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
     </div>
   </div>
   <div class="info-strip">
-    <span>📌 Klik subtest untuk langsung mulai ujian</span>
+    <span>📌 Input nama lalu pilih jenis ujian</span>
     <span>➕ Tambah soal kapan saja di dalam ujian</span>
-    <span>🔄 Soal di-cache otomatis</span>
+    <span>🏆 <button onclick="showView('leaderboard')" style="background:none;border:none;color:var(--blue2);font-weight:700;cursor:pointer;font-size:.8rem">Lihat Papan Peringkat →</button></span>
   </div>
   <div class="main-content">
     <div class="section-header">
@@ -330,9 +423,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
             <span class="subtest-tag">TKP — 45 soal</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn-start" onclick="quickStart('skd','TWK')">▶ Mulai dari TWK (10 soal pertama)</button>
-            <button class="btn-start" style="background:linear-gradient(135deg,#0051c8,#1565c0);font-size:.82rem;padding:9px" onclick="quickStart('skd','TIU')">▶ Langsung ke TIU</button>
-            <button class="btn-start" style="background:linear-gradient(135deg,#1565c0,#1976d2);font-size:.82rem;padding:9px" onclick="quickStart('skd','TKP')">▶ Langsung ke TKP</button>
+            <button class="btn-start" onclick="openModalNama()">▶ Mulai SKD</button>
           </div>
         </div>
       </div>
@@ -354,7 +445,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
             <span class="subtest-tag">Perpajakan</span>
             <span class="subtest-tag">Audit & Pengawasan</span>
           </div>
-          <button class="btn-start" onclick="quickStart('skb','SKB')">▶ Mulai SKB Akuntansi</button>
+          <button class="btn-start" onclick="openModalNama()">▶ Mulai SKB Akuntansi</button>
         </div>
       </div>
     </div>
@@ -441,6 +532,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
       <div class="hasil-icon">🎓</div>
       <div class="hasil-title">Ujian Selesai!</div>
       <div class="hasil-subtitle" id="hasil-subtitle">Terima kasih telah menyelesaikan simulasi CAT CPNS</div>
+    <div style="margin-top:8px;font-size:.95rem;opacity:.9;font-weight:600" id="hasil-nama"></div>
     </div>
     <div class="skor-utama">
       <div class="skor-label">Total Nilai Akhir</div>
@@ -468,6 +560,30 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
       <div class="review-body" id="review-body"></div>
     </div>
     <button class="btn-back-menu" onclick="goToMenu()">🏠 Kembali ke Menu Utama</button>
+  </div>
+</div>
+
+<!-- ═══ VIEW LEADERBOARD ══════════════════════════════════════ -->
+<div id="view-leaderboard" class="view">
+  <div class="lb-container">
+    <button class="lb-back" onclick="showView('menu')">← Kembali ke Menu</button>
+    <div class="lb-header">
+      <div class="lb-header-icon">🏆</div>
+      <div class="lb-header-text">
+        <h2>Papan Peringkat CAT CPNS</h2>
+        <p>Top 50 peserta terbaik berdasarkan skor akhir</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px">
+      <div class="lb-tabs">
+        <button class="lb-tab active" id="lb-tab-skd" onclick="switchLbTab('skd')">📝 SKD</button>
+        <button class="lb-tab skb"   id="lb-tab-skb" onclick="switchLbTab('skb')">📊 SKB Akuntansi</button>
+      </div>
+      <button class="lb-refresh" onclick="loadLeaderboard()">🔄 Refresh</button>
+    </div>
+    <div class="lb-table-wrap" id="lb-content">
+      <div class="lb-loading">Memuat data peringkat...</div>
+    </div>
   </div>
 </div>
 
@@ -500,18 +616,149 @@ const EXAM_CFG = {
 // STATE
 // =============================================================
 let S = {
-  examType:        null,   // 'skd' | 'skb'
-  questions:       [],     // semua soal yang sudah di-load
-  userAnswers:     {},     // { idx: 'A'|'B'|... }
-  flagged:         new Set(),
-  currentQ:        0,
-  timeLeft:        0,
-  timerInterval:   null,
-  // Tracking batch per subtest
-  batchDone:       {},     // { TWK: 2, TIU: 0, ... } batch sudah di-generate
-  currentSubtest:  null,   // subtest yang sedang di-generate
-  generating:      false,  // sedang fetch soal
+  examType:       null,
+  namaPeserta:    '',
+  questions:      [],
+  userAnswers:    {},
+  flagged:        new Set(),
+  currentQ:       0,
+  timeLeft:       0,
+  timerInterval:  null,
+  batchDone:      {},
+  generating:     false,
 };
+
+// ── Leaderboard state ────────────────────────────────────────
+let lbCurrentTab = 'skd';
+
+function switchLbTab(tab) {
+  lbCurrentTab = tab;
+  document.getElementById('lb-tab-skd').classList.toggle('active', tab==='skd');
+  document.getElementById('lb-tab-skb').classList.toggle('active', tab==='skb');
+  loadLeaderboard();
+}
+
+async function loadLeaderboard() {
+  document.getElementById('lb-content').innerHTML = '<div class="lb-loading">⏳ Memuat data peringkat...</div>';
+  try {
+    const res = await fetch(`${BASE_URL}/api/leaderboard?examType=${lbCurrentTab}`);
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    renderLeaderboard(data.entries || []);
+  } catch(e) {
+    document.getElementById('lb-content').innerHTML =
+      `<div class="lb-empty"><div class="lb-empty-icon">⚠️</div><p>Gagal memuat: ${e.message}</p></div>`;
+  }
+}
+
+// showView sudah dideklarasikan di atas, tambah leaderboard hook di sini
+
+function renderLeaderboard(entries) {
+  if (!entries.length) {
+    document.getElementById('lb-content').innerHTML =
+      '<div class="lb-empty"><div class="lb-empty-icon">🏆</div><p>Belum ada peserta yang menyelesaikan ujian ini.<br/>Jadilah yang pertama!</p></div>';
+    return;
+  }
+
+  const medals = ['🥇','🥈','🥉'];
+  const rankClass = ['gold','silver','bronze'];
+
+  const rows = entries.map((e,i) => {
+    const rank = i+1;
+    const rankDisplay = rank <= 3
+      ? `<span class="medal">${medals[i]}</span>`
+      : `<span class="lb-rank">${rank}</span>`;
+
+    const waktu = e.waktu ? new Date(e.waktu).toLocaleDateString('id-ID',{
+      day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'
+    }) : '-';
+
+    let detailSkor = '';
+    if (lbCurrentTab === 'skd') {
+      detailSkor = `<div style="font-size:.72rem;color:var(--textsub);margin-top:2px">TWK:${e.skorTWK} TIU:${e.skorTIU} TKP:${e.skorTKP}</div>`;
+    } else {
+      detailSkor = `<div style="font-size:.72rem;color:var(--textsub);margin-top:2px">${e.jumlahSoal} soal dikerjakan</div>`;
+    }
+
+    const statusHtml = lbCurrentTab === 'skd'
+      ? `<span class="lb-status ${e.lulusSkd?'lulus':'tidak'}">${e.lulusSkd?'✅ Lulus PG':'❌ Tdk Lulus PG'}</span>`
+      : '';
+
+    return `<tr>
+      <td style="text-align:center;width:50px">${rankDisplay}</td>
+      <td><div class="lb-nama">${e.nama}</div>${detailSkor}</td>
+      <td><div class="lb-skor">${e.totalSkor}</div></td>
+      <td>${statusHtml}</td>
+      <td class="lb-waktu">${waktu}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('lb-content').innerHTML = `
+    <table class="lb-table">
+      <thead><tr>
+        <th style="text-align:center">#</th>
+        <th>Nama Peserta</th>
+        <th>Skor</th>
+        <th>Status</th>
+        <th>Waktu</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── Modal nama ───────────────────────────────────────────────
+function openModalNama() {
+  document.getElementById('modal-nama').classList.add('show');
+  setTimeout(() => document.getElementById('input-nama').focus(), 100);
+}
+
+function closeModalNama() {
+  document.getElementById('modal-nama').classList.remove('show');
+}
+
+document.getElementById('modal-nama').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-nama')) closeModalNama();
+});
+
+// Enter di input nama → tidak submit, biarkan user pilih tombol
+document.getElementById('input-nama').addEventListener('keydown', e => {
+  if (e.key === 'Enter') e.preventDefault();
+});
+
+async function startFromModal(examType, startSubtest) {
+  const nama = document.getElementById('input-nama').value.trim();
+  if (!nama) {
+    document.getElementById('input-nama').focus();
+    document.getElementById('input-nama').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('input-nama').style.borderColor = '', 1500);
+    return;
+  }
+  S.namaPeserta = nama;
+  closeModalNama();
+  await quickStart(examType, startSubtest);
+}
+
+// ── Simpan hasil ke leaderboard setelah submit ───────────────
+async function saveToLeaderboard(examType, totalSkor, skorDetail) {
+  try {
+    await fetch(`${BASE_URL}/api/leaderboard`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        nama:       S.namaPeserta || 'Anonim',
+        examType,
+        totalSkor,
+        skorTWK:    skorDetail.TWK || 0,
+        skorTIU:    skorDetail.TIU || 0,
+        skorTKP:    skorDetail.TKP || 0,
+        jumlahSoal: S.questions.length,
+        lulusSkd:   skorDetail.lulusAll || false,
+        device:     navigator.userAgent.substring(0,50),
+      }),
+    });
+    console.log('Leaderboard saved');
+  } catch(e) { console.warn('Leaderboard save failed:', e.message); }
+}
 
 // =============================================================
 // UTILS
@@ -523,6 +770,7 @@ function showView(id) {
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+id).classList.add('active');
   window.scrollTo(0,0);
+  if (id === 'leaderboard') { lbCurrentTab = lbCurrentTab||'skd'; loadLeaderboard(); }
 }
 function showLoading(msg){ document.getElementById('loader-msg').textContent=msg||'Memuat...'; document.getElementById('loading-screen').classList.add('show'); }
 function hideLoading(){ document.getElementById('loading-screen').classList.remove('show'); }
@@ -885,6 +1133,9 @@ function submitExam() {
       </div>`;
     }).join('');
 
+    // Simpan ke leaderboard
+    saveToLeaderboard('skd', total, {TWK:skor.TWK, TIU:skor.TIU, TKP:skor.TKP, lulusAll});
+
     const ob=document.getElementById('overall-status-box');
     ob.style.borderLeft=`5px solid ${lulusAll?'var(--green)':'var(--red)'}`;
     document.getElementById('overall-icon').textContent=lulusAll?'🏆':'📋';
@@ -901,6 +1152,9 @@ function submitExam() {
     document.getElementById('score-max').textContent=`dari skor maksimal ${qs.length*5} (${qs.length} soal dikerjakan)`;
     document.getElementById('skd-breakdown').style.display='none';
     document.getElementById('skb-info').style.display='block';
+    // Simpan ke leaderboard
+    saveToLeaderboard('skb', total, {});
+
     document.getElementById('skb-desc-text').textContent=
       `Skor SKB Akuntansi: ${total} dari ${qs.length*5} poin. Akan diakumulasi dengan SKD untuk penetapan peringkat akhir.`;
   }
@@ -952,6 +1206,20 @@ function submitExam() {
     </div>`;
   }).join('');
 
+  // Tampilkan nama peserta di halaman hasil
+  const namaEl = document.getElementById('hasil-nama');
+  if (namaEl && S.namaPeserta) namaEl.textContent = `👤 ${S.namaPeserta}`;
+
+  // Tombol lihat peringkat
+  const reviewSec = document.getElementById('review-body').closest('.review-section');
+  const lbBtn = document.createElement('button');
+  lbBtn.className = 'btn-back-menu';
+  lbBtn.style.background = 'linear-gradient(135deg,var(--green),#27ae60)';
+  lbBtn.style.marginBottom = '10px';
+  lbBtn.textContent = '🏆 Lihat Papan Peringkat';
+  lbBtn.onclick = () => { lbCurrentTab = S.examType; showView('leaderboard'); };
+  reviewSec.parentNode.insertBefore(lbBtn, reviewSec);
+
   showView('hasil');
 }
 
@@ -979,7 +1247,8 @@ document.getElementById('modal-home').addEventListener('click', e => {
 function goToMenu(){
   clearInterval(S.timerInterval);
   document.getElementById('modal-home').classList.remove('show');
-  S={examType:null,questions:[],userAnswers:{},flagged:new Set(),currentQ:0,timeLeft:0,timerInterval:null,batchDone:{},currentSubtest:null,generating:false};
+  const prevNama = S.namaPeserta;
+  S={examType:null,namaPeserta:prevNama,questions:[],userAnswers:{},flagged:new Set(),currentQ:0,timeLeft:0,timerInterval:null,batchDone:{},generating:false};
   showView('menu');
 }
 </script>
