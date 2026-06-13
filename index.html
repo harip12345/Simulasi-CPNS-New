@@ -849,42 +849,81 @@ document.getElementById('modal-finish').addEventListener('click', e=>{
 // QUICK START — langsung generate batch pertama & masuk ujian
 // =============================================================
 async function quickStart(examType, startSubtest) {
-  S.examType       = examType;
-  S.questions      = [];
-  S.userAnswers    = {};
-  S.flagged        = new Set();
-  S.currentQ       = 0;
-  S.batchDone      = {};
-  S.currentSubtest = startSubtest;
-  S.generating     = false;
-
-  // Init batchDone semua subtest ke 0
+  S.examType      = examType;
+  S.questions     = [];
+  S.userAnswers   = {};
+  S.flagged       = new Set();
+  S.currentQ      = 0;
+  S.batchDone     = {};
+  S.generating    = false;
   EXAM_CFG[examType].subtests.forEach(st => { S.batchDone[st.key] = 0; });
 
-  showLoading(`Memeriksa cache soal ${startSubtest}...`);
+  const cfg = EXAM_CFG[examType];
+  const allQuestions = [];
+  let globalId = 1;
+  let anyLoaded = false;
 
-  try {
-    // forceNew=false → API akan cek Firebase cache dulu sebelum generate
-    const questions = await fetchSoal(examType, startSubtest, BATCH, 0, false);
-    questions.forEach((q,i) => { q.id=i+1; q.nilai=q.nilai||{benar:5,salah:0}; });
-    S.questions  = questions;
-    S.batchDone[startSubtest] = 1;
-    S.timeLeft   = EXAM_CFG[examType].timer;
-
-    hideLoading();
-    showView('ujian');
-
-    document.getElementById('exam-type-label').textContent = examType.toUpperCase();
-    renderNavGrid();
-    renderQuestion(0);
-    startTimer();
-    updateAddBtn();
-    populateRegenSelect();
-
-  } catch(err) {
-    hideLoading();
-    alert('❌ Gagal mengambil soal:\n' + err.message);
+  // ── Coba load SEMUA batch yang sudah ada di database ──────
+  showLoading('Memeriksa soal di database...');
+  for (const st of cfg.subtests) {
+    const batches = Math.ceil(st.total / BATCH);
+    for (let b = 0; b < batches; b++) {
+      try {
+        setLoadingMsg(`Memuat ${st.key} batch ${b+1}/${batches}...`);
+        const qs = await fetchSoal(examType, st.key, BATCH, b, false);
+        if (qs && qs.length) {
+          qs.forEach(q => { q.id = globalId++; q.nilai = q.nilai||{benar:5,salah:0}; });
+          allQuestions.push(...qs);
+          S.batchDone[st.key] = b + 1;
+          anyLoaded = true;
+        } else {
+          // Batch ini belum ada di DB — stop untuk subtest ini
+          break;
+        }
+      } catch(e) {
+        // Batch tidak ada di DB — stop untuk subtest ini
+        break;
+      }
+    }
   }
+
+  // ── Jika tidak ada sama sekali di DB, generate batch pertama ──
+  if (!anyLoaded) {
+    setLoadingMsg(`Generating soal ${startSubtest} pertama...`);
+    try {
+      const qs = await fetchSoal(examType, startSubtest, BATCH, 0, false);
+      qs.forEach(q => { q.id = globalId++; q.nilai = q.nilai||{benar:5,salah:0}; });
+      allQuestions.push(...qs);
+      S.batchDone[startSubtest] = 1;
+    } catch(err) {
+      hideLoading();
+      alert('❌ Gagal mengambil soal:\n' + err.message);
+      return;
+    }
+  }
+
+  S.questions = allQuestions;
+  S.timeLeft  = cfg.timer;
+
+  hideLoading();
+  showView('ujian');
+  document.getElementById('exam-type-label').textContent = examType.toUpperCase();
+  renderNavGrid();
+  renderQuestion(0);
+  startTimer();
+  updateAddBtn();
+  populateRegenSelect();
+
+  const loaded = allQuestions.length;
+  const total  = cfg.subtests.reduce((a,st) => a+st.total, 0);
+  if (loaded >= total) {
+    setTimeout(() => setLoadingMsg(''), 100);
+  }
+}
+
+function setLoadingMsg(msg) {
+  const el = document.getElementById('loader-msg');
+  if (el) el.textContent = msg;
 }
 
 // =============================================================
@@ -1266,12 +1305,13 @@ function submitExam() {
   const namaEl = document.getElementById('hasil-nama');
   if (namaEl && S.namaPeserta) namaEl.textContent = `👤 ${S.namaPeserta}`;
 
-  // Tombol lihat peringkat
+  // Tombol lihat peringkat — cukup 1, insert sebelum review section
   const reviewSec = document.getElementById('review-body').closest('.review-section');
+  // Hapus tombol lama jika ada (prevent duplicate)
+  document.querySelectorAll('.btn-lb-hasil').forEach(el => el.remove());
   const lbBtn = document.createElement('button');
-  lbBtn.className = 'btn-back-menu';
-  lbBtn.style.background = 'linear-gradient(135deg,var(--green),#27ae60)';
-  lbBtn.style.marginBottom = '10px';
+  lbBtn.className = 'btn-back-menu btn-lb-hasil';
+  lbBtn.style.cssText = 'background:linear-gradient(135deg,var(--green),#27ae60);margin-bottom:10px';
   lbBtn.textContent = '🏆 Lihat Papan Peringkat';
   lbBtn.onclick = () => { lbCurrentTab = S.examType; showView('leaderboard'); };
   reviewSec.parentNode.insertBefore(lbBtn, reviewSec);
