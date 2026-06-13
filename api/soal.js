@@ -12,14 +12,12 @@ function cors(res) {
 }
 
 // ─── Model fallback chain ──────────────────────────────────────
-// Menggunakan model-model terbaru yang didukung oleh Groq saat ini
 const MODELS = [
-  'openai/gpt-oss-20b',
-  'qwen/qwen3-32b',
-  'moonshotai/kimi-k2-instruct',
-  'meta-llama/llama-4-scout-17b-16e-instruct',
   'llama-3.3-70b-versatile',
-  'llama-3.1-8b-instant'
+  'llama-3.1-70b-versatile',
+  'llama-3.1-8b-instant',
+  'llama3-70b-8192',
+  'llama3-8b-8192',
 ];
 
 // ─── System Prompts ────────────────────────────────────────────
@@ -116,6 +114,7 @@ async function fsSet(col, doc, data, extraFields = {}) {
     Object.entries(extraFields).forEach(([k,v]) => {
       fields[k] = typeof v === 'number' ? { integerValue: v } : { stringValue: String(v) };
     });
+    // Build updateMask
     const mask = Object.keys(fields).map(k=>`updateMask.fieldPaths=${k}`).join('&');
     const r = await fetch(`${fsUrl(pid, col, doc)}?${mask}`, {
       method:'PATCH',
@@ -143,9 +142,7 @@ async function generate(groq, subtest, count) {
   const models = process.env.GROQ_MODEL
     ? [process.env.GROQ_MODEL, ...MODELS.filter(m => m !== process.env.GROQ_MODEL)]
     : MODELS;
-  
-  let errorLogs = [];
-  
+  let lastErr = null;
   for (const model of models) {
     try {
       console.log(`Trying: ${model}`);
@@ -155,37 +152,21 @@ async function generate(groq, subtest, count) {
           { role:'system', content: PROMPTS[subtest] },
           { role:'user',   content: `Buat tepat ${count} soal ${subtest} dengan topik bervariasi. Output HANYA array JSON valid.` },
         ],
-        temperature: 0.7, 
-        max_tokens: 6000,
+        temperature: 0.7, max_tokens: 6000,
         response_format: { type:'json_object' },
       });
-      
       const raw = res.choices?.[0]?.message?.content || '';
       if (!raw) throw new Error('Empty response');
-      
       const questions = parseGroqJSON(raw);
       if (!questions.length) throw new Error('Empty array');
-      
       console.log(`OK: ${model} → ${questions.length} soal`);
       return { questions, model };
-      
     } catch(err) {
-      console.warn(`Gagal menggunakan ${model}: ${err.message}`);
-      
-      // Jika error API Key salah, langsung hentikan
-      if (err.status === 401) {
-        throw new Error('GROQ_API_KEY tidak valid / Unauthorized.');
-      }
-      
-      // Kumpulkan riwayat eror per model untuk ditampilkan jika semua gagal
-      const errorDetail = err.message || 'Unknown error';
-      errorLogs.push(`[${model}: ${errorDetail}]`);
-      continue;
+      if ([429,413,503].includes(err.status)) { lastErr=err; continue; }
+      throw err;
     }
   }
-  
-  // Menampilkan seluruh histori error agar tahu penyebab aslinya
-  throw new Error('Semua model Groq gagal dicoba. Detail: ' + errorLogs.join(' | '));
+  throw new Error('Semua model tidak tersedia: ' + lastErr?.message);
 }
 
 // ─── Main Handler ──────────────────────────────────────────────
@@ -205,8 +186,10 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return res.status(500).json({ success:false, error:'GROQ_API_KEY belum diset.' });
 
+  // Dokumen Firestore: soal_bank/skd_TWK_b0, skd_TWK_b1, dst.
   const docId = `${type}_${sub}_b${batchIndex}`;
 
+  // ── Cek database dulu (kecuali forceNew) ──────────────────
   if (!forceNew) {
     try {
       const stored = await fsGet('soal_bank', docId);
@@ -220,6 +203,7 @@ module.exports = async function handler(req, res) {
     } catch(e) { console.warn('DB read error:', e.message); }
   }
 
+  // ── Generate dari Groq ─────────────────────────────────────
   try {
     const groq = new Groq({ apiKey });
     const { questions, model } = await generate(groq, sub, count);
@@ -229,6 +213,7 @@ module.exports = async function handler(req, res) {
       q.nilai = q.nilai || { benar:5, salah:0 };
     });
 
+    // Simpan permanen ke Firestore
     fsSet('soal_bank', docId, questions, {
       examType: type, subtest: sub, batchIndex, count: questions.length,
     }).then(ok => console.log(`DB save ${ok?'OK':'FAIL'}: ${docId}`))
@@ -241,6 +226,7 @@ module.exports = async function handler(req, res) {
     });
   } catch(err) {
     console.error('Generate error:', err.message);
+    if (err.status === 401) return res.status(401).json({ success:false, error:'GROQ_API_KEY tidak valid.' });
     return res.status(500).json({ success:false, error: err.message });
   }
 };
