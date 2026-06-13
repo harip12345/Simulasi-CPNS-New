@@ -12,10 +12,12 @@ function cors(res) {
 }
 
 const MODELS = [
+  'openai/gpt-oss-20b',
+  'qwen/qwen3-32b',
+  'moonshotai/kimi-k2-instruct',
+  'meta-llama/llama-4-scout-17b-16e-instruct',
   'llama-3.3-70b-versatile',
   'llama-3.1-8b-instant',
-  'llama3-70b-8192',
-  'llama3-8b-8192',
 ];
 
 // ─── SYSTEM PROMPTS — Expert Level, Anti-Repetisi ─────────────
