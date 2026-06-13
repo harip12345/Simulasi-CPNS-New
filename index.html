@@ -338,43 +338,27 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
   </div>
 </nav>
 
-<!-- MODAL INPUT NAMA -->
+<!-- MODAL INPUT NAMA (2 step) -->
 <div class="modal-overlay" id="modal-nama">
   <div class="modal-box">
-    <div class="modal-header">👤 Identitas Peserta</div>
-    <div class="modal-nama-body">
+    <div class="modal-header" id="modal-nama-header">👤 Identitas Peserta</div>
+    <!-- Step 1: Input nama -->
+    <div id="modal-step1" class="modal-nama-body">
       <h3>Masukkan nama Anda</h3>
       <p>Nama akan ditampilkan di papan peringkat setelah ujian selesai.</p>
       <input type="text" id="input-nama" class="input-nama" placeholder="Nama lengkap Anda..." maxlength="50" autocomplete="off"/>
-      <div class="exam-select-btns" id="exam-select-btns">
-        <button class="exam-select-btn" onclick="startFromModal('skd','TWK')">
-          <span class="btn-icon">📝</span>
-          <div class="btn-info">
-            <div class="btn-title">SKD — Mulai dari TWK</div>
-            <div class="btn-sub">TWK → TIU → TKP · Timer 100 menit</div>
-          </div>
-        </button>
-        <button class="exam-select-btn" onclick="startFromModal('skd','TIU')">
-          <span class="btn-icon">🧮</span>
-          <div class="btn-info">
-            <div class="btn-title">SKD — Mulai dari TIU</div>
-            <div class="btn-sub">Langsung ke Tes Intelejensi Umum</div>
-          </div>
-        </button>
-        <button class="exam-select-btn" onclick="startFromModal('skd','TKP')">
-          <span class="btn-icon">🤝</span>
-          <div class="btn-info">
-            <div class="btn-title">SKD — Mulai dari TKP</div>
-            <div class="btn-sub">Langsung ke Tes Karakteristik Pribadi</div>
-          </div>
-        </button>
-        <button class="exam-select-btn skb" onclick="startFromModal('skb','SKB')">
-          <span class="btn-icon">📊</span>
-          <div class="btn-info">
-            <div class="btn-title">SKB — Akuntansi</div>
-            <div class="btn-sub">Kompetensi Bidang Akuntansi · Timer 90 menit</div>
-          </div>
-        </button>
+      <div class="modal-footer" style="padding:14px 0 0">
+        <button class="btn-modal-cancel" onclick="closeModalNama()">Batal</button>
+        <button class="btn-modal-confirm" onclick="goToStep2()">Lanjut →</button>
+      </div>
+    </div>
+    <!-- Step 2: Pilih ujian (muncul setelah nama diisi) -->
+    <div id="modal-step2" class="modal-nama-body" style="display:none">
+      <h3 id="modal-step2-title">Pilih Jenis Ujian</h3>
+      <p id="modal-step2-desc">Pilih jenis ujian dan subtest awal:</p>
+      <div class="exam-select-btns" id="exam-select-btns"></div>
+      <div style="margin-top:10px">
+        <button class="btn-modal-cancel" onclick="backToStep1()" style="width:100%;margin-top:4px">← Ubah Nama</button>
       </div>
     </div>
   </div>
@@ -392,6 +376,9 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
       <span class="hero-badge">🤖 AI Generated</span>
       <span class="hero-badge">🔄 Tambah Soal Live</span>
     </div>
+    <button onclick="showView('leaderboard')" style="margin-top:20px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);color:#fff;border-radius:10px;padding:10px 24px;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.25)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">
+      🏆 Lihat Papan Peringkat
+    </button>
   </div>
   <div class="info-strip">
     <span>📌 Input nama lalu pilih jenis ujian</span>
@@ -423,7 +410,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
             <span class="subtest-tag">TKP — 45 soal</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn-start" onclick="openModalNama()">▶ Mulai SKD</button>
+            <button class="btn-start" onclick="openModalNama('skd')">▶ Mulai SKD</button>
           </div>
         </div>
       </div>
@@ -445,7 +432,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
             <span class="subtest-tag">Perpajakan</span>
             <span class="subtest-tag">Audit & Pengawasan</span>
           </div>
-          <button class="btn-start" onclick="openModalNama()">▶ Mulai SKB Akuntansi</button>
+          <button class="btn-start" onclick="openModalNama('skb')">▶ Mulai SKB Akuntansi</button>
         </div>
       </div>
     </div>
@@ -511,6 +498,19 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
         <div class="legend-item"><div class="legend-dot a"></div>Sudah dijawab</div>
         <div class="legend-item"><div class="legend-dot f"></div>Ragu-ragu</div>
         <div class="legend-item"><div class="legend-dot c"></div>Soal aktif</div>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="font-size:.72rem;font-weight:700;color:var(--textsub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Generate Ulang</div>
+        <select id="select-regen-subtest" style="width:100%;padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:.78rem;margin-bottom:6px;font-family:inherit">
+          <option value="">-- Pilih Subtest --</option>
+        </select>
+        <select id="select-regen-batch" style="width:100%;padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:.78rem;margin-bottom:8px;font-family:inherit">
+          <option value="">-- Pilih Batch --</option>
+        </select>
+        <button onclick="regenBatch()" id="btn-regen" style="width:100%;padding:7px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer">
+          🔄 Generate Soal Baru
+        </button>
+        <div style="font-size:.68rem;color:var(--textsub);margin-top:5px;line-height:1.4">Soal baru akan menimpa soal lama di database</div>
       </div>
     </div>
   </div>
@@ -706,26 +706,31 @@ function renderLeaderboard(entries) {
     </table>`;
 }
 
-// ── Modal nama ───────────────────────────────────────────────
-function openModalNama() {
+// ── Modal nama 2-step ────────────────────────────────────────
+// pendingExamType diset saat user klik tombol SKD/SKB di menu
+let pendingExamType = null;
+
+function openModalNama(examType) {
+  pendingExamType = examType;
+  // Reset ke step 1
+  document.getElementById('modal-step1').style.display = 'block';
+  document.getElementById('modal-step2').style.display = 'none';
+  document.getElementById('modal-nama-header').textContent = '👤 Identitas Peserta';
   document.getElementById('modal-nama').classList.add('show');
-  setTimeout(() => document.getElementById('input-nama').focus(), 100);
+  setTimeout(() => document.getElementById('input-nama').focus(), 150);
 }
 
 function closeModalNama() {
   document.getElementById('modal-nama').classList.remove('show');
 }
 
-document.getElementById('modal-nama').addEventListener('click', e => {
-  if (e.target === document.getElementById('modal-nama')) closeModalNama();
-});
+function backToStep1() {
+  document.getElementById('modal-step1').style.display = 'block';
+  document.getElementById('modal-step2').style.display = 'none';
+  document.getElementById('modal-nama-header').textContent = '👤 Identitas Peserta';
+}
 
-// Enter di input nama → tidak submit, biarkan user pilih tombol
-document.getElementById('input-nama').addEventListener('keydown', e => {
-  if (e.key === 'Enter') e.preventDefault();
-});
-
-async function startFromModal(examType, startSubtest) {
+function goToStep2() {
   const nama = document.getElementById('input-nama').value.trim();
   if (!nama) {
     document.getElementById('input-nama').focus();
@@ -734,6 +739,56 @@ async function startFromModal(examType, startSubtest) {
     return;
   }
   S.namaPeserta = nama;
+
+  // Bangun tombol pilihan sesuai examType
+  const examType = pendingExamType;
+  const btnsEl   = document.getElementById('exam-select-btns');
+  const step2Title = document.getElementById('modal-step2-title');
+  const step2Desc  = document.getElementById('modal-step2-desc');
+
+  if (examType === 'skd') {
+    step2Title.textContent = 'Pilih Subtest Awal SKD';
+    step2Desc.textContent  = `Halo ${nama}! Mulai dari subtest mana?`;
+    btnsEl.innerHTML = `
+      <button class="exam-select-btn" onclick="startFromModal('skd','TWK')">
+        <span class="btn-icon">📝</span>
+        <div class="btn-info"><div class="btn-title">Mulai dari TWK</div>
+        <div class="btn-sub">Tes Wawasan Kebangsaan · 30 soal</div></div>
+      </button>
+      <button class="exam-select-btn" onclick="startFromModal('skd','TIU')">
+        <span class="btn-icon">🧮</span>
+        <div class="btn-info"><div class="btn-title">Mulai dari TIU</div>
+        <div class="btn-sub">Tes Intelejensi Umum · 35 soal</div></div>
+      </button>
+      <button class="exam-select-btn" onclick="startFromModal('skd','TKP')">
+        <span class="btn-icon">🤝</span>
+        <div class="btn-info"><div class="btn-title">Mulai dari TKP</div>
+        <div class="btn-sub">Tes Karakteristik Pribadi · 45 soal</div></div>
+      </button>`;
+  } else {
+    step2Title.textContent = 'Konfirmasi SKB Akuntansi';
+    step2Desc.textContent  = `Halo ${nama}! Klik mulai untuk memulai SKB Akuntansi.`;
+    btnsEl.innerHTML = `
+      <button class="exam-select-btn skb" onclick="startFromModal('skb','SKB')">
+        <span class="btn-icon">📊</span>
+        <div class="btn-info"><div class="btn-title">Mulai SKB Akuntansi</div>
+        <div class="btn-sub">100 soal · Timer 90 menit</div></div>
+      </button>`;
+  }
+
+  document.getElementById('modal-step1').style.display = 'none';
+  document.getElementById('modal-step2').style.display = 'block';
+  document.getElementById('modal-nama-header').textContent = `📋 Pilih Ujian — ${nama}`;
+}
+
+document.getElementById('modal-nama').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-nama')) closeModalNama();
+});
+document.getElementById('input-nama').addEventListener('keydown', e => {
+  if (e.key === 'Enter') goToStep2();
+});
+
+async function startFromModal(examType, startSubtest) {
   closeModalNama();
   await quickStart(examType, startSubtest);
 }
@@ -824,6 +879,7 @@ async function quickStart(examType, startSubtest) {
     renderQuestion(0);
     startTimer();
     updateAddBtn();
+    populateRegenSelect();
 
   } catch(err) {
     hideLoading();
@@ -1243,6 +1299,94 @@ function closeModalHome() {
 document.getElementById('modal-home').addEventListener('click', e => {
   if (e.target === document.getElementById('modal-home')) closeModalHome();
 });
+
+// Populate select regen saat masuk ujian
+function populateRegenSelect() {
+  const cfg = EXAM_CFG[S.examType];
+  const stSel = document.getElementById('select-regen-subtest');
+  if (!stSel) return;
+  stSel.innerHTML = '<option value="">-- Pilih Subtest --</option>';
+  cfg.subtests.forEach(st => {
+    const opt = document.createElement('option');
+    opt.value = st.key;
+    opt.textContent = `${st.key} — ${st.label}`;
+    stSel.appendChild(opt);
+  });
+  stSel.onchange = function() { populateRegenBatch(this.value); };
+  document.getElementById('select-regen-batch').innerHTML = '<option value="">-- Pilih Batch --</option>';
+}
+
+function populateRegenBatch(subtestKey) {
+  const bSel = document.getElementById('select-regen-batch');
+  if (!bSel || !subtestKey) return;
+  const cfg  = EXAM_CFG[S.examType];
+  const st   = cfg.subtests.find(s => s.key === subtestKey);
+  if (!st) return;
+  const batches = Math.ceil(st.total / BATCH);
+  bSel.innerHTML = '<option value="">-- Pilih Batch --</option>';
+  for (let b = 0; b < batches; b++) {
+    const start = b * BATCH + 1;
+    const end   = Math.min((b+1) * BATCH, st.total);
+    const opt   = document.createElement('option');
+    opt.value   = b;
+    opt.textContent = `Batch ${b+1}: Soal ${start}–${end}`;
+    bSel.appendChild(opt);
+  }
+}
+
+async function regenBatch() {
+  const stSel  = document.getElementById('select-regen-subtest');
+  const bSel   = document.getElementById('select-regen-batch');
+  const sub    = stSel?.value;
+  const bIdx   = bSel?.value;
+
+  if (!sub)  { alert('Pilih subtest terlebih dahulu.'); return; }
+  if (bIdx === '' || bIdx === undefined) { alert('Pilih batch terlebih dahulu.'); return; }
+  if (S.generating) return;
+
+  const batchIndex = parseInt(bIdx);
+  const cfg  = EXAM_CFG[S.examType];
+  const st   = cfg.subtests.find(s => s.key === sub);
+  const start = batchIndex * BATCH;
+  const end   = Math.min(start + BATCH, st.total);
+  const count = end - start;
+
+  if (!confirm(`Generate ulang ${count} soal ${sub} batch ${batchIndex+1}?
+Soal lama di database akan ditimpa.`)) return;
+
+  S.generating = true;
+  document.getElementById('btn-regen').disabled = true;
+  showLoading(`Generating ulang soal ${sub} batch ${batchIndex+1}...`);
+
+  try {
+    const newQ = await fetchSoal(S.examType, sub, count, batchIndex, true); // forceNew=true
+    newQ.forEach((q,i) => {
+      q.id    = start + i + 1;
+      q.nilai = q.nilai || { benar:5, salah:0 };
+    });
+
+    // Ganti soal di state (hanya soal di range batch ini untuk subtest ini)
+    let subIdx = 0;
+    S.questions = S.questions.map(q => {
+      if (q.subtest !== sub) return q;
+      const myIdx = subIdx++;
+      if (myIdx >= start && myIdx < end) return newQ[myIdx - start];
+      return q;
+    });
+
+    S.generating = false;
+    hideLoading();
+    document.getElementById('btn-regen').disabled = false;
+    renderNavGrid();
+    renderQuestion(Math.min(S.currentQ, S.questions.length - 1));
+    alert(`✅ ${count} soal ${sub} batch ${batchIndex+1} berhasil di-generate ulang dan tersimpan di database.`);
+  } catch(err) {
+    S.generating = false;
+    hideLoading();
+    document.getElementById('btn-regen').disabled = false;
+    alert('❌ Gagal generate ulang: ' + err.message);
+  }
+}
 
 function goToMenu(){
   clearInterval(S.timerInterval);
