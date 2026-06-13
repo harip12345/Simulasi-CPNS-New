@@ -127,11 +127,11 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 
 /* Batch generate buttons */
 .batch-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.btn-batch{padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;border:2px solid var(--blue2);background:#fff;color:var(--blue2);transition:all .15s;display:flex;align-items:center;gap:5px}
-.btn-batch:hover:not(:disabled){background:var(--blue2);color:#fff}
-.btn-batch:disabled{opacity:.4;cursor:not-allowed}
-.btn-batch.loading{background:var(--light);color:var(--textsub);border-color:var(--border)}
-.btn-batch.done{background:#d4f4e2;color:var(--green);border-color:var(--green);cursor:default}
+.btn-batch{padding:9px 18px;border-radius:8px;font-size:.83rem;font-weight:700;cursor:pointer;border:2px solid var(--blue2);background:var(--blue2);color:#fff;transition:all .15s;display:flex;align-items:center;gap:5px;box-shadow:0 2px 6px rgba(0,81,200,.25)}
+.btn-batch:hover:not(:disabled){background:#003580;border-color:#003580;transform:translateY(-1px)}
+.btn-batch:disabled{opacity:.35;cursor:not-allowed;background:#fff;color:var(--border);border-color:var(--border);box-shadow:none;transform:none}
+.btn-batch.loading{background:var(--light);color:var(--textsub);border-color:var(--border);box-shadow:none}
+.btn-batch.done{background:#d4f4e2;color:var(--green);border-color:var(--green);cursor:default;box-shadow:none}
 .btn-batch-new{padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;border:1.5px solid var(--textsub);background:#fff;color:var(--textsub);transition:all .15s}
 .btn-batch-new:hover:not(:disabled){border-color:var(--red);color:var(--red)}
 .btn-batch-new:disabled{opacity:.4;cursor:not-allowed}
@@ -640,17 +640,20 @@ function renderSubtestSteps(examType) {
     stepDiv.id = `step-${st.key}`;
 
     // Buat tombol batch
+    // Setiap batch aktif jika: batch sebelumnya sudah done, belum done sendiri, subtest tidak locked
     let batchBtnsHTML = '';
     for (let b = 0; b < batches; b++) {
-      const batchCollected = Math.min(st.batch, st.total - b * st.batch);
-      const bDone = b < batchesDone;
-      const bActive = b === batchesDone && !isDone && !isLocked;
+      const bStart = b * st.batch + 1;
+      const bEnd   = Math.min((b + 1) * st.batch, st.total);
+      const bCount = bEnd - bStart + 1;
+      const bDone   = collected >= bEnd;           // soal sampai bEnd sudah terkumpul
+      const bActive = !bDone && !isLocked && (collected >= b * st.batch); // batch sebelumnya selesai
       batchBtnsHTML += `<button
-        class="btn-batch ${bDone?'done':''}"
+        class="btn-batch ${bDone ? 'done' : ''}"
         id="batch-btn-${st.key}-${b}"
-        onclick="generateBatch('${examType}','${st.key}',${b},${batchCollected})"
-        ${(bDone || !bActive || isLocked) ? 'disabled' : ''}
-      >${bDone ? '✓ ' : ''}Soal ${b*st.batch+1}–${b*st.batch+batchCollected}</button>`;
+        onclick="generateBatch('${examType}','${st.key}',${b},${bCount})"
+        ${(!bActive || bDone) ? 'disabled' : ''}
+      >${bDone ? '✓ Selesai ' : '⬇ Ambil '}Soal ${bStart}–${bEnd}</button>`;
     }
 
     const sourceChip = state.subtestForceNew[st.key]
@@ -675,7 +678,10 @@ function renderSubtestSteps(examType) {
             <div class="gen-progress-fill" style="width:${(collected/st.total*100).toFixed(0)}%"></div>
           </div>
         </div>
-        <div class="batch-btns">${batchBtnsHTML}</div>
+        <p style="font-size:.76rem;color:var(--textsub);margin-bottom:8px">
+        👇 Klik tiap tombol untuk mengambil soal (10 soal per klik):
+      </p>
+      <div class="batch-btns">${batchBtnsHTML}</div>
         ${isDone ? `<button class="btn-batch-new" onclick="resetSubtest('${examType}','${st.key}')" ${isLocked?'disabled':''}>🔄 Generate Soal Baru</button>` : ''}
       </div>`;
     stepsEl.appendChild(stepDiv);
@@ -692,7 +698,7 @@ function updateStartButton(examType) {
   const btn = document.getElementById('btn-mulai-ujian');
   btn.disabled = !allReady;
   btn.textContent = allReady
-    ? '▶ Mulai Ujian Sekarang'
+    ? '▶ Semua Soal Siap — Mulai Ujian!'
     : `⏳ ${cfg.subtests.filter(st=>(state.subtestQuestions[st.key]?.length||0)<st.total).map(st=>st.key).join(', ')} belum lengkap`;
 }
 
@@ -700,7 +706,7 @@ async function generateBatch(examType, subtestKey, batchIndex, count) {
   const btn = document.getElementById(`batch-btn-${subtestKey}-${batchIndex}`);
   if (btn) { btn.disabled = true; btn.classList.add('loading'); btn.textContent = '⏳ Mengambil soal...'; }
 
-  showLoading(`Mengambil soal ${subtestKey} batch ${batchIndex+1}...`);
+  showLoading(`⬇ Mengambil ${count} soal ${subtestKey} (batch ${batchIndex+1} dari ${Math.ceil({TWK:30,TIU:35,TKP:45,SKB:100}[subtestKey]/count)})...`);
 
   try {
     const forceNew = state.subtestForceNew[subtestKey] || false;
@@ -721,8 +727,10 @@ async function generateBatch(examType, subtestKey, batchIndex, count) {
     // Track source
     if (data.source === 'generated') state.subtestForceNew[subtestKey] = true;
 
-    // Append soal
-    state.subtestQuestions[subtestKey].push(...data.questions);
+    // Append soal — filter duplikat berdasarkan teks soal
+    const existing = new Set((state.subtestQuestions[subtestKey]||[]).map(q=>q.text));
+    const fresh    = data.questions.filter(q => !existing.has(q.text));
+    state.subtestQuestions[subtestKey].push(...fresh);
     state.subtestBatchDone[subtestKey] = (state.subtestBatchDone[subtestKey] || 0) + 1;
 
     hideLoading();
@@ -730,7 +738,7 @@ async function generateBatch(examType, subtestKey, batchIndex, count) {
 
   } catch (err) {
     hideLoading();
-    if (btn) { btn.disabled = false; btn.classList.remove('loading'); btn.textContent = `Soal — Coba Lagi`; }
+    if (btn) { btn.disabled = false; btn.classList.remove('loading'); btn.textContent = `⚠ Coba Lagi Soal ${batchIndex*10+1}–${batchIndex*10+count}`; }
     let errMsg = err.message;
     if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
       errMsg = 'Tidak dapat terhubung ke server API.\n\n' +
