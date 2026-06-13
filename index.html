@@ -89,61 +89,6 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 .site-footer{background:var(--blue);color:rgba(255,255,255,.7);text-align:center;padding:18px;font-size:.78rem;margin-top:36px}
 .site-footer strong{color:#fff}
 
-/* ═══ VIEW SUBTEST SELECTOR ═══════════════════════════════════ */
-#view-subtest{min-height:calc(100vh - 58px);background:var(--light)}
-.subtest-selector{max-width:680px;margin:0 auto;padding:32px 18px 60px}
-.subtest-back{display:inline-flex;align-items:center;gap:6px;color:var(--blue2);font-size:.85rem;font-weight:600;cursor:pointer;margin-bottom:24px;background:none;border:none}
-.subtest-back:hover{text-decoration:underline}
-.subtest-header{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-radius:14px;padding:26px 24px;margin-bottom:24px}
-.subtest-header h2{font-size:1.3rem;font-weight:800;margin-bottom:6px}
-.subtest-header p{font-size:.85rem;opacity:.85}
-.subtest-timer-info{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;font-size:.78rem;margin-top:10px}
-
-/* Subtest step cards */
-.subtest-steps{display:flex;flex-direction:column;gap:14px}
-.subtest-step{background:#fff;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,.08);border:2px solid var(--border);overflow:hidden;transition:border-color .2s}
-.subtest-step.active{border-color:var(--blue2)}
-.subtest-step.done{border-color:var(--green)}
-.subtest-step.locked{opacity:.55}
-.step-header{padding:16px 20px;display:flex;align-items:center;gap:14px}
-.step-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;flex-shrink:0;background:var(--light);color:var(--textsub)}
-.subtest-step.active .step-icon{background:var(--blue);color:#fff}
-.subtest-step.done .step-icon{background:var(--green);color:#fff}
-.step-info{flex:1}
-.step-title{font-size:.95rem;font-weight:800;margin-bottom:2px}
-.step-desc{font-size:.78rem;color:var(--textsub)}
-.step-badge{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--light);color:var(--textsub)}
-.subtest-step.done .step-badge{background:#d4f4e2;color:var(--green)}
-.subtest-step.active .step-badge{background:#e8f0fe;color:var(--blue2)}
-
-.step-body{padding:0 20px 16px;display:none}
-.subtest-step.active .step-body,.subtest-step.done .step-body{display:block}
-
-/* Generate progress bar dalam step */
-.gen-progress{margin-bottom:12px}
-.gen-progress-label{display:flex;justify-content:space-between;font-size:.76rem;color:var(--textsub);margin-bottom:5px}
-.gen-progress-bar{background:var(--light);border-radius:20px;height:8px;overflow:hidden;border:1px solid var(--border)}
-.gen-progress-fill{height:100%;background:linear-gradient(90deg,var(--green),#27ae60);border-radius:20px;transition:width .4s}
-
-/* Batch generate buttons */
-.batch-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.btn-batch{padding:9px 18px;border-radius:8px;font-size:.83rem;font-weight:700;cursor:pointer;border:2px solid var(--blue2);background:var(--blue2);color:#fff;transition:all .15s;display:flex;align-items:center;gap:5px;box-shadow:0 2px 6px rgba(0,81,200,.25)}
-.btn-batch:hover:not(:disabled){background:#003580;border-color:#003580;transform:translateY(-1px)}
-.btn-batch:disabled{opacity:.35;cursor:not-allowed;background:#fff;color:var(--border);border-color:var(--border);box-shadow:none;transform:none}
-.btn-batch.loading{background:var(--light);color:var(--textsub);border-color:var(--border);box-shadow:none}
-.btn-batch.done{background:#d4f4e2;color:var(--green);border-color:var(--green);cursor:default;box-shadow:none}
-.btn-batch-new{padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;border:1.5px solid var(--textsub);background:#fff;color:var(--textsub);transition:all .15s}
-.btn-batch-new:hover:not(:disabled){border-color:var(--red);color:var(--red)}
-.btn-batch-new:disabled{opacity:.4;cursor:not-allowed}
-
-.btn-mulai-subtest{width:100%;padding:11px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;transition:opacity .2s}
-.btn-mulai-subtest:hover:not(:disabled){opacity:.88}
-.btn-mulai-subtest:disabled{opacity:.4;cursor:not-allowed}
-.btn-mulai-subtest.skb{background:linear-gradient(135deg,var(--green),#27ae60)}
-.source-chip{font-size:.72rem;padding:2px 8px;border-radius:10px;font-weight:600;margin-left:6px}
-.source-chip.cache{background:#d4f4e2;color:var(--green)}
-.source-chip.generated{background:#e8f0fe;color:var(--blue2)}
-
 /* ═══ VIEW UJIAN ═════════════════════════════════════════════ */
 #view-ujian{min-height:calc(100vh - 58px)}
 .exam-topbar{background:#fff;border-bottom:2px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;position:sticky;top:58px;z-index:90;box-shadow:0 2px 8px rgba(0,0,0,.07)}
@@ -155,14 +100,14 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 @keyframes pulse-t{0%,100%{opacity:1}50%{opacity:.75}}
 .timer-label{font-size:.68rem;opacity:.8}
 .timer-value{font-size:1.35rem;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:1px}
-.btn-finish{background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.83rem;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-finish{background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.83rem;font-weight:700;cursor:pointer}
 .btn-finish:hover{opacity:.85}
 .exam-layout{display:grid;grid-template-columns:1fr 290px;min-height:calc(100vh - 126px)}
-.question-panel{padding:26px 26px 100px;background:var(--light)}
+.question-panel{padding:26px 26px 120px;background:var(--light)}
 .question-header{display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
 .question-number-badge{background:var(--blue);color:#fff;border-radius:8px;padding:5px 13px;font-size:.83rem;font-weight:700}
 .question-subtest-badge{background:#fff;color:var(--blue2);border:1.5px solid var(--blue2);border-radius:8px;padding:4px 11px;font-size:.76rem;font-weight:600}
-.question-flag-badge{margin-left:auto;background:#fff8e1;color:var(--yellow);border:1.5px solid var(--yellow);border-radius:8px;padding:4px 11px;font-size:.76rem;font-weight:600}
+.question-flag-badge{margin-left:auto;background:#fff8e1;color:var(--yellow);border:1.5px solid var(--yellow);border-radius:8px;padding:4px 11px;font-size:.76rem;font-weight:600;display:none}
 .question-card{background:#fff;border-radius:12px;padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
 .question-text{font-size:.95rem;line-height:1.85;font-weight:500}
 .options-list{display:flex;flex-direction:column;gap:9px}
@@ -172,8 +117,10 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 .option-letter{width:28px;height:28px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;background:var(--light);color:var(--blue);border:1.5px solid var(--border);transition:all .15s}
 .option-item.selected .option-letter{background:var(--green);color:#fff;border-color:var(--green)}
 .option-text{font-size:.88rem;line-height:1.6;padding-top:3px}
-.nav-bottom{position:fixed;bottom:0;left:0;width:calc(100% - 290px);background:#fff;border-top:2px solid var(--border);padding:11px 26px;display:flex;gap:8px;z-index:80;box-shadow:0 -2px 10px rgba(0,0,0,.08)}
-.btn-nav{padding:9px 20px;border-radius:8px;font-size:.86rem;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+
+/* Bottom nav bar */
+.nav-bottom{position:fixed;bottom:0;left:0;width:calc(100% - 290px);background:#fff;border-top:2px solid var(--border);padding:10px 20px;display:flex;gap:8px;align-items:center;z-index:80;box-shadow:0 -2px 10px rgba(0,0,0,.08)}
+.btn-nav{padding:9px 18px;border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;border:none;transition:all .15s}
 .btn-prev{background:var(--light);color:var(--text);border:1.5px solid var(--border)}
 .btn-prev:hover{background:var(--border)}
 .btn-flag{background:#fff8e1;color:var(--yellow);border:1.5px solid var(--yellow)}
@@ -181,6 +128,14 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 .btn-next{background:var(--blue);color:#fff;margin-left:auto}
 .btn-next:hover{background:var(--blue2)}
 .btn-nav:disabled{opacity:.4;cursor:not-allowed}
+
+/* Tombol tambah soal — di nav bottom */
+.btn-add-soal{background:linear-gradient(135deg,var(--green),#27ae60);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;animation:glow-green 2s infinite}
+.btn-add-soal:hover{opacity:.88}
+.btn-add-soal:disabled{opacity:.4;cursor:not-allowed;animation:none;background:var(--gray)}
+@keyframes glow-green{0%,100%{box-shadow:0 0 0 0 rgba(26,158,78,.4)}50%{box-shadow:0 0 0 6px rgba(26,158,78,0)}}
+
+/* Nav panel kanan */
 .nav-panel{background:#fff;border-left:2px solid var(--border);padding:18px 14px;overflow-y:auto;height:calc(100vh - 126px);position:sticky;top:126px}
 .nav-panel-title{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--textsub);margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--border)}
 .progress-wrap{margin-bottom:12px}
@@ -191,11 +146,12 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 .section-tab{background:var(--light);border:1.5px solid var(--border);border-radius:6px;padding:3px 9px;font-size:.7rem;font-weight:600;cursor:pointer;color:var(--textsub);transition:all .15s}
 .section-tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .soal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:14px}
-.soal-btn{aspect-ratio:1;border-radius:6px;border:1.5px solid var(--border);background:#e5e7eb;color:#555;font-size:.76rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.soal-btn{aspect-ratio:1;border-radius:6px;border:1.5px solid var(--border);background:#e5e7eb;color:#555;font-size:.74rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .soal-btn:hover{border-color:var(--blue2);color:var(--blue2)}
 .soal-btn.answered{background:var(--answered);color:#fff;border-color:var(--answered)}
 .soal-btn.flagged{background:var(--flagged);color:#fff;border-color:var(--flagged)}
 .soal-btn.current{border:2.5px solid var(--blue);box-shadow:0 0 0 2px rgba(0,53,128,.22)}
+.soal-btn.placeholder{background:#f3f4f6;color:#ccc;border-style:dashed;cursor:default}
 .nav-legend{display:flex;flex-direction:column;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
 .legend-item{display:flex;align-items:center;gap:7px;font-size:.73rem;color:var(--textsub)}
 .legend-dot{width:14px;height:14px;border-radius:4px;flex-shrink:0;border:1.5px solid transparent}
@@ -203,6 +159,14 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 .legend-dot.a{background:var(--answered)}
 .legend-dot.f{background:var(--flagged)}
 .legend-dot.c{background:#fff;border:2px solid var(--blue)}
+
+/* Status soal di nav panel */
+.subtest-status{margin-bottom:12px}
+.subtest-status-row{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;padding:5px 0;border-bottom:1px solid var(--border)}
+.subtest-status-row:last-child{border-bottom:none}
+.subtest-status-label{font-weight:600;color:var(--text)}
+.subtest-status-val{color:var(--textsub)}
+.subtest-status-val.done{color:var(--green);font-weight:700}
 
 /* ═══ VIEW HASIL ══════════════════════════════════════════════ */
 #view-hasil{min-height:calc(100vh - 58px)}
@@ -243,7 +207,6 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 .btn-back-menu{display:block;width:100%;padding:13px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;margin-bottom:28px}
 .btn-back-menu:hover{opacity:.88}
 
-/* RESPONSIVE */
 @media(max-width:768px){
   .exam-layout{grid-template-columns:1fr}
   .nav-panel{border-left:none;border-top:2px solid var(--border);height:auto;position:static;order:-1}
@@ -253,8 +216,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 }
 @media(max-width:480px){
   .soal-grid{grid-template-columns:repeat(6,1fr)}
-  .question-panel{padding:16px 13px 100px}
-  .subtest-steps{gap:10px}
+  .question-panel{padding:16px 13px 120px}
 }
 </style>
 </head>
@@ -265,7 +227,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
   <div class="loader-logo">BKN</div>
   <div class="loader-sub">Badan Kepegawaian Negara</div>
   <div class="loader-spinner"></div>
-  <div class="loader-msg" id="loader-msg">Memuat data soal...</div>
+  <div class="loader-msg" id="loader-msg">Memuat soal...</div>
 </div>
 
 <!-- MODAL SELESAI -->
@@ -273,7 +235,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
   <div class="modal-box">
     <div class="modal-header">⚠️ Konfirmasi Selesai Ujian</div>
     <div class="modal-body">
-      Apakah Anda yakin ingin mengakhiri ujian? Jawaban tidak bisa diubah setelah ini.
+      Apakah Anda yakin ingin mengakhiri ujian?
       <div class="modal-stat"><div>Soal Terjawab</div><span id="modal-answered">0</span></div>
       <div class="modal-stat"><div>Belum Dijawab</div><span id="modal-unanswered">0</span></div>
       <div class="modal-stat"><div>Ragu-ragu</div><span id="modal-flagged">0</span></div>
@@ -305,17 +267,17 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
   <div class="hero-banner">
     <div class="hero-eyebrow">🏛️ Sistem CAT Resmi · BKN</div>
     <h1 class="hero-title">Simulasi Ujian CAT CPNS</h1>
-    <p class="hero-desc">Platform latihan Computer Assisted Test yang menyerupai sistem ujian resmi BKN. Soal di-generate AI berdasarkan materi CPNS 2024–2025.</p>
+    <p class="hero-desc">Platform latihan CAT berbasis AI. Soal di-generate dari materi CPNS 2024–2025. Mulai dari soal pertama, tambah soal kapan saja selama ujian.</p>
     <div class="hero-badges">
-      <span class="hero-badge">📋 SKD & SKB</span>
+      <span class="hero-badge">📋 SKD & SKB Akuntansi</span>
       <span class="hero-badge">⏱️ Timer Real-time</span>
-      <span class="hero-badge">📊 Nilai Otomatis</span>
       <span class="hero-badge">🤖 AI Generated</span>
+      <span class="hero-badge">🔄 Tambah Soal Live</span>
     </div>
   </div>
   <div class="info-strip">
-    <span>📌 Pastikan koneksi internet stabil</span>
-    <span>⚠️ Ujian tidak bisa dijeda</span>
+    <span>📌 Klik subtest untuk langsung mulai ujian</span>
+    <span>➕ Tambah soal kapan saja di dalam ujian</span>
     <span>🔄 Soal di-cache otomatis</span>
   </div>
   <div class="main-content">
@@ -325,45 +287,49 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
       <div class="section-divider"></div>
     </div>
     <div class="exam-cards">
-      <div class="exam-card" onclick="goToSubtestSelector('skd')">
+      <!-- SKD -->
+      <div class="exam-card">
         <div class="exam-card-accent"></div>
         <div class="exam-card-body">
           <div class="exam-card-icon">📝</div>
           <div class="exam-card-type">Seleksi Kompetensi Dasar</div>
           <div class="exam-card-title">Simulasi SKD</div>
-          <div class="exam-card-desc">Tes kemampuan dasar wajib seluruh peserta CPNS. Meliputi tiga subtes dengan passing grade masing-masing.</div>
+          <div class="exam-card-desc">Mulai dari subtest manapun. Tambah soal batch 10 langsung di dalam ujian. Timer 100 menit untuk semua subtest.</div>
           <div class="exam-card-meta">
             <div class="meta-chip">⏱️ 100 Menit</div>
-            <div class="meta-chip">📝 110 Soal</div>
-            <div class="meta-chip">🎯 Passing Grade</div>
+            <div class="meta-chip">📝 110 Soal Total</div>
           </div>
           <div class="exam-card-subtests">
             <span class="subtest-tag">TWK — 30 soal</span>
             <span class="subtest-tag">TIU — 35 soal</span>
             <span class="subtest-tag">TKP — 45 soal</span>
           </div>
-          <button class="btn-start">▶ Pilih &amp; Siapkan SKD</button>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn-start" onclick="quickStart('skd','TWK')">▶ Mulai dari TWK (10 soal pertama)</button>
+            <button class="btn-start" style="background:linear-gradient(135deg,#0051c8,#1565c0);font-size:.82rem;padding:9px" onclick="quickStart('skd','TIU')">▶ Langsung ke TIU</button>
+            <button class="btn-start" style="background:linear-gradient(135deg,#1565c0,#1976d2);font-size:.82rem;padding:9px" onclick="quickStart('skd','TKP')">▶ Langsung ke TKP</button>
+          </div>
         </div>
       </div>
-      <div class="exam-card skb" onclick="goToSubtestSelector('skb')">
+      <!-- SKB -->
+      <div class="exam-card skb">
         <div class="exam-card-accent"></div>
         <div class="exam-card-body">
           <div class="exam-card-icon">📊</div>
           <div class="exam-card-type">Seleksi Kompetensi Bidang</div>
           <div class="exam-card-title">Simulasi SKB Akuntansi</div>
-          <div class="exam-card-desc">Tes kompetensi teknis untuk formasi Analis Keuangan, Auditor, Bendahara. Materi akuntansi pemerintahan & keuangan negara.</div>
+          <div class="exam-card-desc">Materi akuntansi pemerintahan, keuangan negara, perpajakan, dan audit. Timer 90 menit, tambah soal live.</div>
           <div class="exam-card-meta">
             <div class="meta-chip">⏱️ 90 Menit</div>
-            <div class="meta-chip">📝 100 Soal</div>
-            <div class="meta-chip">🏆 Skor Maks 500</div>
+            <div class="meta-chip">📝 100 Soal Total</div>
           </div>
           <div class="exam-card-subtests">
             <span class="subtest-tag">Akuntansi Pemerintahan</span>
             <span class="subtest-tag">Keuangan Negara</span>
             <span class="subtest-tag">Perpajakan</span>
-            <span class="subtest-tag">Audit</span>
+            <span class="subtest-tag">Audit & Pengawasan</span>
           </div>
-          <button class="btn-start">▶ Pilih &amp; Siapkan SKB</button>
+          <button class="btn-start" onclick="quickStart('skb','SKB')">▶ Mulai SKB Akuntansi</button>
         </div>
       </div>
     </div>
@@ -379,28 +345,10 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
       </table>
     </div>
   </div>
-  <footer class="site-footer"><strong>Simulasi CAT CPNS</strong> · Untuk latihan. Bukan situs resmi BKN.<br/>Situs resmi: <strong>cat.bkn.go.id</strong></footer>
+  <footer class="site-footer"><strong>Simulasi CAT CPNS</strong> · Untuk latihan · Bukan situs resmi BKN · <strong>cat.bkn.go.id</strong></footer>
 </div>
 
-<!-- ═══ VIEW 2: SUBTEST SELECTOR ══════════════════════════════ -->
-<div id="view-subtest" class="view">
-  <div class="subtest-selector">
-    <button class="subtest-back" onclick="showView('menu')">← Kembali ke Menu</button>
-    <div class="subtest-header" id="subtest-header">
-      <h2 id="subtest-header-title">Persiapan SKD</h2>
-      <p id="subtest-header-desc">Generate soal per subtest secara bertahap. Ujian dimulai setelah semua soal siap.</p>
-      <div class="subtest-timer-info">⏱️ <span id="subtest-timer-label">Timer 100 menit berjalan saat ujian dimulai</span></div>
-    </div>
-    <div class="subtest-steps" id="subtest-steps"></div>
-    <div style="margin-top:20px">
-      <button class="btn-mulai-subtest" id="btn-mulai-ujian" onclick="startExamFromSelector()" disabled>
-        ⏳ Siapkan soal terlebih dahulu
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ VIEW 3: UJIAN ══════════════════════════════════════════ -->
+<!-- ═══ VIEW 2: UJIAN ══════════════════════════════════════════ -->
 <div id="view-ujian" class="view">
   <div class="exam-topbar">
     <div>
@@ -419,23 +367,27 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
     </div>
   </div>
   <div class="exam-layout">
+    <!-- Kiri: Soal -->
     <div class="question-panel" id="question-panel">
       <div class="question-header">
         <div class="question-number-badge" id="q-number-badge">Soal 1</div>
         <div class="question-subtest-badge" id="q-subtest-badge">TWK</div>
-        <div class="question-flag-badge" id="q-flag-badge" style="display:none">🚩 Ragu-ragu</div>
+        <div class="question-flag-badge" id="q-flag-badge">🚩 Ragu-ragu</div>
       </div>
       <div class="question-card">
         <div class="question-text" id="question-text">Memuat soal...</div>
       </div>
       <div class="options-list" id="options-list"></div>
     </div>
+    <!-- Kanan: Navigasi -->
     <div class="nav-panel">
       <div class="nav-panel-title">Navigasi Soal</div>
       <div class="progress-wrap">
-        <div class="progress-label"><span>Progres</span><span id="progress-text">0/0</span></div>
+        <div class="progress-label"><span>Terjawab</span><span id="progress-text">0/0</span></div>
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
       </div>
+      <!-- Status per subtest -->
+      <div class="subtest-status" id="subtest-status"></div>
       <div class="section-tabs" id="section-tabs"></div>
       <div class="soal-grid" id="soal-grid"></div>
       <div class="nav-legend">
@@ -446,20 +398,24 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
       </div>
     </div>
   </div>
+  <!-- Bottom nav -->
   <div class="nav-bottom">
-    <button class="btn-nav btn-prev" id="btn-prev" onclick="navigate(-1)">◀ Sebelumnya</button>
-    <button class="btn-nav btn-flag" id="btn-flag" onclick="toggleFlag()">🚩 Ragu-ragu</button>
-    <button class="btn-nav btn-next" id="btn-next" onclick="navigate(1)">Selanjutnya ▶</button>
+    <button class="btn-nav btn-prev" id="btn-prev" onclick="navigate(-1)">◀ Prev</button>
+    <button class="btn-nav btn-flag" id="btn-flag" onclick="toggleFlag()">🚩 Ragu</button>
+    <button class="btn-add-soal" id="btn-add-soal" onclick="addNextBatch()" style="display:none">
+      ➕ <span id="btn-add-label">Ambil 10 Soal Lagi</span>
+    </button>
+    <button class="btn-nav btn-next" id="btn-next" onclick="navigate(1)">Next ▶</button>
   </div>
 </div>
 
-<!-- ═══ VIEW 4: HASIL ══════════════════════════════════════════ -->
+<!-- ═══ VIEW 3: HASIL ══════════════════════════════════════════ -->
 <div id="view-hasil" class="view">
   <div class="hasil-container">
     <div class="hasil-header">
       <div class="hasil-icon">🎓</div>
       <div class="hasil-title">Ujian Selesai!</div>
-      <div class="hasil-subtitle">Terima kasih telah menyelesaikan simulasi CAT CPNS</div>
+      <div class="hasil-subtitle" id="hasil-subtitle">Terima kasih telah menyelesaikan simulasi CAT CPNS</div>
     </div>
     <div class="skor-utama">
       <div class="skor-label">Total Nilai Akhir</div>
@@ -492,27 +448,25 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 
 <script>
 // =============================================================
-// KONFIGURASI
+// CONFIG
 // =============================================================
 const BASE_URL = 'https://cat-cpns-api.vercel.app';
+const BATCH    = 10; // soal per-generate
 
-// Konfigurasi soal sesuai standar BKN
-// total = jumlah soal final, batch = soal per-generate
-const EXAM_CONFIG = {
+// Konfigurasi subtest per exam type
+const EXAM_CFG = {
   skd: {
-    label: 'SKD — Seleksi Kompetensi Dasar',
     timer: 100 * 60,
     subtests: [
-      { key:'TWK', label:'Tes Wawasan Kebangsaan',    total:30, batch:10 },
-      { key:'TIU', label:'Tes Intelejensi Umum',       total:35, batch:10 },
-      { key:'TKP', label:'Tes Karakteristik Pribadi',  total:45, batch:10 },
+      { key:'TWK', label:'Tes Wawasan Kebangsaan',    total:30 },
+      { key:'TIU', label:'Tes Intelejensi Umum',       total:35 },
+      { key:'TKP', label:'Tes Karakteristik Pribadi',  total:45 },
     ],
   },
   skb: {
-    label: 'SKB — Akuntansi',
     timer: 90 * 60,
     subtests: [
-      { key:'SKB', label:'Kompetensi Bidang Akuntansi', total:100, batch:10 },
+      { key:'SKB', label:'Kompetensi Bidang Akuntansi', total:100 },
     ],
   },
 };
@@ -520,403 +474,325 @@ const EXAM_CONFIG = {
 // =============================================================
 // STATE
 // =============================================================
-let state = {
-  currentExamType: null,
-  questions: [],
-  userAnswers: {},
-  flaggedQuestions: new Set(),
-  currentQuestion: 0,
-  timeLeft: 0,
-  timerInterval: null,
-  // Subtest selector state
-  subtestQuestions: {}, // { TWK: [...], TIU: [...], TKP: [...] }
-  subtestBatchDone: {}, // { TWK: 3, TIU: 0, ... } jumlah batch selesai
-  subtestForceNew: {},  // { TWK: false, ... }
+let S = {
+  examType:        null,   // 'skd' | 'skb'
+  questions:       [],     // semua soal yang sudah di-load
+  userAnswers:     {},     // { idx: 'A'|'B'|... }
+  flagged:         new Set(),
+  currentQ:        0,
+  timeLeft:        0,
+  timerInterval:   null,
+  // Tracking batch per subtest
+  batchDone:       {},     // { TWK: 2, TIU: 0, ... } batch sudah di-generate
+  currentSubtest:  null,   // subtest yang sedang di-generate
+  generating:      false,  // sedang fetch soal
 };
 
 // =============================================================
-// NAVBAR DATE
+// UTILS
 // =============================================================
 document.getElementById('navbar-date').textContent =
   new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-// =============================================================
-// VIEW SWITCHER
-// =============================================================
 function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + id).classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
   window.scrollTo(0,0);
 }
-
-// =============================================================
-// LOADING
-// =============================================================
-function showLoading(msg) {
-  document.getElementById('loader-msg').textContent = msg || 'Memuat...';
-  document.getElementById('loading-screen').classList.add('show');
-}
-function hideLoading() {
-  document.getElementById('loading-screen').classList.remove('show');
-}
-function setLoadingMsg(msg) {
-  const el = document.getElementById('loader-msg');
-  if (el) el.textContent = msg;
-}
+function showLoading(msg){ document.getElementById('loader-msg').textContent=msg||'Memuat...'; document.getElementById('loading-screen').classList.add('show'); }
+function hideLoading(){ document.getElementById('loading-screen').classList.remove('show'); }
 
 // =============================================================
 // MODAL
 // =============================================================
-function openModal() {
-  const total    = state.questions.length;
-  const answered = Object.keys(state.userAnswers).length;
-  document.getElementById('modal-answered').textContent   = answered;
-  document.getElementById('modal-unanswered').textContent = total - answered;
-  document.getElementById('modal-flagged').textContent    = state.flaggedQuestions.size;
+function openModal(){
+  const total=S.questions.length, ans=Object.keys(S.userAnswers).length;
+  document.getElementById('modal-answered').textContent   = ans;
+  document.getElementById('modal-unanswered').textContent = total-ans;
+  document.getElementById('modal-flagged').textContent    = S.flagged.size;
   document.getElementById('modal-finish').classList.add('show');
 }
-function closeModal() {
-  document.getElementById('modal-finish').classList.remove('show');
-}
-document.getElementById('modal-finish').addEventListener('click', e => {
-  if (e.target === document.getElementById('modal-finish')) closeModal();
+function closeModal(){ document.getElementById('modal-finish').classList.remove('show'); }
+document.getElementById('modal-finish').addEventListener('click', e=>{
+  if(e.target===document.getElementById('modal-finish')) closeModal();
 });
 
 // =============================================================
-// SUBTEST SELECTOR
+// QUICK START — langsung generate batch pertama & masuk ujian
 // =============================================================
-function goToSubtestSelector(examType) {
-  state.currentExamType = examType;
-  state.subtestQuestions = {};
-  state.subtestBatchDone = {};
-  state.subtestForceNew  = {};
+async function quickStart(examType, startSubtest) {
+  S.examType       = examType;
+  S.questions      = [];
+  S.userAnswers    = {};
+  S.flagged        = new Set();
+  S.currentQ       = 0;
+  S.batchDone      = {};
+  S.currentSubtest = startSubtest;
+  S.generating     = false;
 
-  const cfg = EXAM_CONFIG[examType];
+  // Init batchDone semua subtest ke 0
+  EXAM_CFG[examType].subtests.forEach(st => { S.batchDone[st.key] = 0; });
 
-  // Header
-  document.getElementById('subtest-header-title').textContent =
-    examType === 'skd' ? 'Persiapan SKD' : 'Persiapan SKB Akuntansi';
-  document.getElementById('subtest-header-desc').textContent =
-    'Generate soal per subtest secara bertahap. Setiap tombol mengambil 10 soal dari AI. ' +
-    'Lanjut ke subtest berikutnya hanya tersedia setelah soal lengkap.';
-  document.getElementById('subtest-timer-label').textContent =
-    examType === 'skd' ? 'Timer 100 menit berjalan saat ujian dimulai' : 'Timer 90 menit berjalan saat ujian dimulai';
-
-  if (examType === 'skb') {
-    document.getElementById('subtest-header').style.background =
-      'linear-gradient(135deg,#1a9e4e,#27ae60)';
-    document.getElementById('btn-mulai-ujian').classList.add('skb');
-  } else {
-    document.getElementById('subtest-header').style.background = '';
-    document.getElementById('btn-mulai-ujian').classList.remove('skb');
-  }
-
-  cfg.subtests.forEach(st => {
-    state.subtestQuestions[st.key] = [];
-    state.subtestBatchDone[st.key] = 0;
-    state.subtestForceNew[st.key]  = false;
-  });
-
-  renderSubtestSteps(examType);
-  showView('subtest');
-}
-
-function renderSubtestSteps(examType) {
-  const cfg      = EXAM_CONFIG[examType];
-  const stepsEl  = document.getElementById('subtest-steps');
-  stepsEl.innerHTML = '';
-
-  cfg.subtests.forEach((st, idx) => {
-    const collected  = state.subtestQuestions[st.key]?.length || 0;
-    const isDone     = collected >= st.total;
-    const prevDone   = idx === 0 || (state.subtestQuestions[cfg.subtests[idx-1].key]?.length || 0) >= cfg.subtests[idx-1].total;
-    const isActive   = !isDone && prevDone;
-    const isLocked   = !isDone && !prevDone;
-    const batches    = Math.ceil(st.total / st.batch);
-    const batchesDone = state.subtestBatchDone[st.key] || 0;
-
-    const stepDiv = document.createElement('div');
-    stepDiv.className = `subtest-step ${isDone?'done':isActive?'active':isLocked?'locked':''}`;
-    stepDiv.id = `step-${st.key}`;
-
-    // Buat tombol batch
-    // Setiap batch aktif jika: batch sebelumnya sudah done, belum done sendiri, subtest tidak locked
-    let batchBtnsHTML = '';
-    for (let b = 0; b < batches; b++) {
-      const bStart = b * st.batch + 1;
-      const bEnd   = Math.min((b + 1) * st.batch, st.total);
-      const bCount = bEnd - bStart + 1;
-      const bDone   = collected >= bEnd;           // soal sampai bEnd sudah terkumpul
-      const bActive = !bDone && !isLocked && (collected >= b * st.batch); // batch sebelumnya selesai
-      batchBtnsHTML += `<button
-        class="btn-batch ${bDone ? 'done' : ''}"
-        id="batch-btn-${st.key}-${b}"
-        onclick="generateBatch('${examType}','${st.key}',${b},${bCount})"
-        ${(!bActive || bDone) ? 'disabled' : ''}
-      >${bDone ? '✓ Selesai ' : '⬇ Ambil '}Soal ${bStart}–${bEnd}</button>`;
-    }
-
-    const sourceChip = state.subtestForceNew[st.key]
-      ? '<span class="source-chip generated">AI Baru</span>'
-      : (batchesDone > 0 ? '<span class="source-chip cache">Cache</span>' : '');
-
-    stepDiv.innerHTML = `
-      <div class="step-header">
-        <div class="step-icon">${isDone?'✓':idx+1}</div>
-        <div class="step-info">
-          <div class="step-title">${st.key} — ${st.label}</div>
-          <div class="step-desc">${st.total} soal · ${batches} batch × ${st.batch} soal${sourceChip}</div>
-        </div>
-        <div class="step-badge">${collected}/${st.total} soal</div>
-      </div>
-      <div class="step-body">
-        <div class="gen-progress">
-          <div class="gen-progress-label">
-            <span>Soal terkumpul</span><span>${collected}/${st.total}</span>
-          </div>
-          <div class="gen-progress-bar">
-            <div class="gen-progress-fill" style="width:${(collected/st.total*100).toFixed(0)}%"></div>
-          </div>
-        </div>
-        <p style="font-size:.76rem;color:var(--textsub);margin-bottom:8px">
-        👇 Klik tiap tombol untuk mengambil soal (10 soal per klik):
-      </p>
-      <div class="batch-btns">${batchBtnsHTML}</div>
-        ${isDone ? `<button class="btn-batch-new" onclick="resetSubtest('${examType}','${st.key}')" ${isLocked?'disabled':''}>🔄 Generate Soal Baru</button>` : ''}
-      </div>`;
-    stepsEl.appendChild(stepDiv);
-  });
-
-  updateStartButton(examType);
-}
-
-function updateStartButton(examType) {
-  const cfg      = EXAM_CONFIG[examType];
-  const allReady = cfg.subtests.every(st =>
-    (state.subtestQuestions[st.key]?.length || 0) >= st.total
-  );
-  const btn = document.getElementById('btn-mulai-ujian');
-  btn.disabled = !allReady;
-  btn.textContent = allReady
-    ? '▶ Semua Soal Siap — Mulai Ujian!'
-    : `⏳ ${cfg.subtests.filter(st=>(state.subtestQuestions[st.key]?.length||0)<st.total).map(st=>st.key).join(', ')} belum lengkap`;
-}
-
-async function generateBatch(examType, subtestKey, batchIndex, count) {
-  const btn = document.getElementById(`batch-btn-${subtestKey}-${batchIndex}`);
-  if (btn) { btn.disabled = true; btn.classList.add('loading'); btn.textContent = '⏳ Mengambil soal...'; }
-
-  showLoading(`⬇ Mengambil ${count} soal ${subtestKey} (batch ${batchIndex+1} dari ${Math.ceil({TWK:30,TIU:35,TKP:45,SKB:100}[subtestKey]/count)})...`);
+  showLoading(`Mengambil 10 soal ${startSubtest} pertama...`);
 
   try {
-    const forceNew = state.subtestForceNew[subtestKey] || false;
-    const res = await fetch(BASE_URL + '/api/soal', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ examType, subtest: subtestKey, count, batchIndex, forceNew }),
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(`API error ${res.status}: ${err.error || res.statusText}`);
-    }
-
-    const data = await res.json();
-    if (!data.success || !Array.isArray(data.questions)) throw new Error('Response tidak valid.');
-
-    // Track source
-    if (data.source === 'generated') state.subtestForceNew[subtestKey] = true;
-
-    // Append soal — filter duplikat berdasarkan teks soal
-    const existing = new Set((state.subtestQuestions[subtestKey]||[]).map(q=>q.text));
-    const fresh    = data.questions.filter(q => !existing.has(q.text));
-    state.subtestQuestions[subtestKey].push(...fresh);
-    state.subtestBatchDone[subtestKey] = (state.subtestBatchDone[subtestKey] || 0) + 1;
+    const questions = await fetchSoal(examType, startSubtest, BATCH, 0, false);
+    questions.forEach((q,i) => { q.id=i+1; q.nilai=q.nilai||{benar:5,salah:0}; });
+    S.questions  = questions;
+    S.batchDone[startSubtest] = 1;
+    S.timeLeft   = EXAM_CFG[examType].timer;
 
     hideLoading();
-    renderSubtestSteps(examType);
+    showView('ujian');
 
-  } catch (err) {
+    document.getElementById('exam-type-label').textContent = examType.toUpperCase();
+    renderNavGrid();
+    renderQuestion(0);
+    startTimer();
+    updateAddBtn();
+
+  } catch(err) {
     hideLoading();
-    if (btn) { btn.disabled = false; btn.classList.remove('loading'); btn.textContent = `⚠ Coba Lagi Soal ${batchIndex*10+1}–${batchIndex*10+count}`; }
-    let errMsg = err.message;
-    if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-      errMsg = 'Tidak dapat terhubung ke server API.\n\n' +
-        'Pastikan:\n' +
-        '• Anda membuka halaman dari URL Vercel (bukan file lokal)\n' +
-        '• Koneksi internet aktif\n' +
-        '• API Vercel sudah di-deploy ulang setelah perubahan terakhir\n\n' +
-        'URL API: ' + BASE_URL;
-    } else if (err.message.includes('504') || err.message.includes('timeout')) {
-      errMsg = 'Server timeout (504). AI sedang sibuk, coba lagi dalam beberapa detik.';
-    } else if (err.message.includes('429')) {
-      errMsg = 'Rate limit Groq tercapai. Tunggu beberapa menit lalu coba lagi.';
-    }
-    alert('❌ ' + errMsg);
+    alert('❌ Gagal mengambil soal:\n' + err.message);
   }
 }
 
-async function resetSubtest(examType, subtestKey) {
-  if (!confirm(`Generate soal ${subtestKey} baru? Soal lama akan diganti.`)) return;
-  state.subtestQuestions[subtestKey] = [];
-  state.subtestBatchDone[subtestKey] = 0;
-  state.subtestForceNew[subtestKey]  = true;
-  renderSubtestSteps(examType);
+// =============================================================
+// FETCH SOAL dari Vercel API
+// =============================================================
+async function fetchSoal(examType, subtest, count, batchIndex, forceNew) {
+  const res = await fetch(BASE_URL + '/api/soal', {
+    method:  'POST',
+    headers: { 'Content-Type':'application/json' },
+    body:    JSON.stringify({ examType, subtest, count, batchIndex, forceNew }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(`API ${res.status}: ${err.error||res.statusText}`);
+  }
+  const data = await res.json();
+  if (!data.success || !Array.isArray(data.questions)) throw new Error('Response tidak valid.');
+  return data.questions;
 }
 
-function startExamFromSelector() {
-  const examType = state.currentExamType;
-  const cfg      = EXAM_CONFIG[examType];
+// =============================================================
+// TAMBAH BATCH SOAL — dipanggil dari tombol ➕ di nav bottom
+// =============================================================
+async function addNextBatch() {
+  if (S.generating) return;
 
-  // Gabungkan semua soal & beri ID global
-  const allQuestions = [];
-  let globalId = 1;
-  cfg.subtests.forEach(st => {
-    (state.subtestQuestions[st.key] || []).forEach(q => {
-      q.id = globalId++;
-      q.nilai = q.nilai || { benar: 5, salah: 0 };
-    });
-    allQuestions.push(...(state.subtestQuestions[st.key] || []));
+  const { examType } = S;
+  const cfg          = EXAM_CFG[examType];
+
+  // Cari subtest yang belum selesai (belum mencapai total)
+  const currentSt = cfg.subtests.find(st => {
+    const collected = S.questions.filter(q => q.subtest === st.key).length;
+    return collected < st.total;
+  });
+  if (!currentSt) return; // semua sudah lengkap
+
+  const collected  = S.questions.filter(q => q.subtest === currentSt.key).length;
+  const remaining  = currentSt.total - collected;
+  const count      = Math.min(BATCH, remaining);
+  const batchIndex = S.batchDone[currentSt.key] || 0;
+
+  S.generating     = true;
+  const addBtn     = document.getElementById('btn-add-soal');
+  if (addBtn) { addBtn.disabled=true; }
+  showLoading(`Mengambil ${count} soal ${currentSt.key} (batch ${batchIndex+1})...`);
+
+  try {
+    const newQ = await fetchSoal(examType, currentSt.key, count, batchIndex, false);
+
+    // Assign ID lanjutan
+    const startId = S.questions.length + 1;
+    newQ.forEach((q,i) => { q.id=startId+i; q.nilai=q.nilai||{benar:5,salah:0}; });
+
+    S.questions.push(...newQ);
+    S.batchDone[currentSt.key] = batchIndex + 1;
+    S.generating = false;
+
+    hideLoading();
+    renderNavGrid();
+    updateAddBtn();
+
+    // Arahkan ke soal baru jika user sedang di soal terakhir
+    if (S.currentQ === startId - 2) renderQuestion(startId - 1);
+    else renderQuestion(S.currentQ);
+
+  } catch(err) {
+    S.generating = false;
+    hideLoading();
+    if (addBtn) addBtn.disabled = false;
+    alert('❌ Gagal mengambil soal tambahan:\n' + err.message);
+  }
+}
+
+// Update tombol ➕ — tampilkan apa yang akan diambil selanjutnya
+function updateAddBtn() {
+  const btn      = document.getElementById('btn-add-soal');
+  const labelEl  = document.getElementById('btn-add-label');
+  if (!btn) return;
+
+  const cfg = EXAM_CFG[S.examType];
+
+  // Cari subtest berikutnya yang belum lengkap
+  const nextSt = cfg.subtests.find(st => {
+    const collected = S.questions.filter(q => q.subtest === st.key).length;
+    return collected < st.total;
   });
 
-  state.questions        = allQuestions;
-  state.userAnswers      = {};
-  state.flaggedQuestions = new Set();
-  state.currentQuestion  = 0;
-  state.timeLeft         = cfg.timer;
+  if (!nextSt) {
+    btn.style.display = 'none'; // semua soal sudah lengkap
+    return;
+  }
 
-  document.getElementById('exam-type-label').textContent = examType.toUpperCase();
-  showView('ujian');
-  renderNavGrid();
-  renderQuestion(0);
-  startTimer();
+  const collected = S.questions.filter(q => q.subtest === nextSt.key).length;
+  const remaining = nextSt.total - collected;
+  const count     = Math.min(BATCH, remaining);
+
+  btn.style.display = 'inline-flex';
+  btn.disabled      = S.generating;
+
+  // Label kontekstual
+  const isNewSubtest = collected === 0;
+  labelEl.textContent = isNewSubtest
+    ? `Mulai ${nextSt.key} (${count} soal pertama)`
+    : `+${count} soal ${nextSt.key} (${collected}/${nextSt.total})`;
 }
 
 // =============================================================
 // TIMER
 // =============================================================
 function startTimer() {
-  clearInterval(state.timerInterval);
+  clearInterval(S.timerInterval);
   updateTimerDisplay();
-  state.timerInterval = setInterval(() => {
-    state.timeLeft--;
+  S.timerInterval = setInterval(()=>{
+    S.timeLeft--;
     updateTimerDisplay();
-    if (state.timeLeft <= 0) {
-      clearInterval(state.timerInterval);
-      alert('⏰ Waktu habis! Jawaban disubmit otomatis.');
-      submitExam();
-    }
+    if (S.timeLeft<=0) { clearInterval(S.timerInterval); alert('⏰ Waktu habis!'); submitExam(); }
   }, 1000);
 }
 function updateTimerDisplay() {
-  const m = Math.floor(state.timeLeft / 60);
-  const s = state.timeLeft % 60;
-  document.getElementById('timer-display').textContent =
-    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  const box = document.getElementById('timer-box');
+  const m=Math.floor(S.timeLeft/60), s=S.timeLeft%60;
+  document.getElementById('timer-display').textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  const box=document.getElementById('timer-box');
   box.classList.remove('warning','danger');
-  if (state.timeLeft <= 300) box.classList.add('danger');
-  else if (state.timeLeft <= 600) box.classList.add('warning');
+  if (S.timeLeft<=300) box.classList.add('danger');
+  else if (S.timeLeft<=600) box.classList.add('warning');
 }
 
 // =============================================================
 // RENDER QUESTION
 // =============================================================
 function renderNavGrid() {
-  const grid = document.getElementById('soal-grid');
-  const tabs = document.getElementById('section-tabs');
-  grid.innerHTML = ''; tabs.innerHTML = '';
+  const grid=document.getElementById('soal-grid');
+  const tabs=document.getElementById('section-tabs');
+  const statusEl=document.getElementById('subtest-status');
+  grid.innerHTML=''; tabs.innerHTML=''; statusEl.innerHTML='';
 
-  if (state.currentExamType === 'skd') {
-    const subtests = [...new Set(state.questions.map(q => q.subtest))];
-    subtests.forEach((st,i) => {
-      const btn = document.createElement('button');
-      btn.className = 'section-tab' + (i===0?' active':'');
-      btn.textContent = st;
-      btn.onclick = () => {
-        const fi = state.questions.findIndex(q => q.subtest === st);
-        if (fi !== -1) renderQuestion(fi);
-      };
-      tabs.appendChild(btn);
-    });
+  const cfg = EXAM_CFG[S.examType];
+
+  // Section tabs
+  const subtestsPresent = [...new Set(S.questions.map(q=>q.subtest))];
+  subtestsPresent.forEach((st,i)=>{
+    const btn=document.createElement('button');
+    btn.className='section-tab'+(i===0?' active':'');
+    btn.textContent=st;
+    btn.onclick=()=>{ const fi=S.questions.findIndex(q=>q.subtest===st); if(fi!==-1) renderQuestion(fi); };
+    tabs.appendChild(btn);
+  });
+
+  // Status subtest di nav panel
+  cfg.subtests.forEach(st=>{
+    const collected=S.questions.filter(q=>q.subtest===st.key).length;
+    const isDone=collected>=st.total;
+    const row=document.createElement('div');
+    row.className='subtest-status-row';
+    row.innerHTML=`<span class="subtest-status-label">${st.key}</span>
+      <span class="subtest-status-val ${isDone?'done':''}">${collected}/${st.total}${isDone?' ✓':''}</span>`;
+    statusEl.appendChild(row);
+  });
+
+  // Soal grid — tampilkan placeholder untuk soal yang belum di-generate
+  const totalExpected = cfg.subtests.reduce((a,st)=>a+st.total,0);
+  for (let i=0; i<totalExpected; i++) {
+    const btn=document.createElement('button');
+    if (i < S.questions.length) {
+      btn.className='soal-btn';
+      btn.id='soal-btn-'+i;
+      btn.textContent=i+1;
+      btn.onclick=()=>renderQuestion(i);
+    } else {
+      btn.className='soal-btn placeholder';
+      btn.textContent=i+1;
+      btn.title='Belum di-generate';
+    }
+    grid.appendChild(btn);
   }
 
-  state.questions.forEach((q, idx) => {
-    const btn = document.createElement('button');
-    btn.className = 'soal-btn';
-    btn.id = 'soal-btn-' + idx;
-    btn.textContent = idx + 1;
-    btn.onclick = () => renderQuestion(idx);
-    grid.appendChild(btn);
-  });
   updateNavGrid();
 }
 
 function updateNavGrid() {
-  const total = state.questions.length;
-  const answered = Object.keys(state.userAnswers).length;
-  document.getElementById('progress-text').textContent = answered + '/' + total;
-  document.getElementById('progress-bar').style.width = total > 0 ? (answered/total*100)+'%' : '0%';
+  const total=S.questions.length, ans=Object.keys(S.userAnswers).length;
+  document.getElementById('progress-text').textContent=ans+'/'+total;
+  document.getElementById('progress-bar').style.width=total>0?(ans/total*100)+'%':'0%';
 
-  state.questions.forEach((_, idx) => {
-    const btn = document.getElementById('soal-btn-' + idx);
+  S.questions.forEach((_,i)=>{
+    const btn=document.getElementById('soal-btn-'+i);
     if (!btn) return;
-    btn.className = 'soal-btn';
-    if (state.flaggedQuestions.has(idx)) btn.classList.add('flagged');
-    else if (state.userAnswers[idx] !== undefined) btn.classList.add('answered');
-    if (idx === state.currentQuestion) btn.classList.add('current');
+    btn.className='soal-btn';
+    if (S.flagged.has(i)) btn.classList.add('flagged');
+    else if (S.userAnswers[i]!==undefined) btn.classList.add('answered');
+    if (i===S.currentQ) btn.classList.add('current');
   });
 }
 
 function renderQuestion(idx) {
-  state.currentQuestion = idx;
-  const q = state.questions[idx];
-  if (!q) return;
+  if (idx >= S.questions.length) return;
+  S.currentQ=idx;
+  const q=S.questions[idx];
 
-  document.getElementById('q-number-badge').textContent  = 'Soal ' + (idx+1);
+  document.getElementById('q-number-badge').textContent  ='Soal '+(idx+1);
   document.getElementById('q-subtest-badge').textContent = q.subtest;
-  document.getElementById('exam-section-label').textContent = q.subtestFull || q.subtest;
+  document.getElementById('exam-section-label').textContent = q.subtestFull||q.subtest;
 
-  const flagBadge = document.getElementById('q-flag-badge');
-  flagBadge.style.display = state.flaggedQuestions.has(idx) ? 'flex' : 'none';
-  document.getElementById('btn-flag').classList.toggle('active', state.flaggedQuestions.has(idx));
+  const flagBadge=document.getElementById('q-flag-badge');
+  flagBadge.style.display=S.flagged.has(idx)?'flex':'none';
+  document.getElementById('btn-flag').classList.toggle('active',S.flagged.has(idx));
+  document.getElementById('question-text').innerHTML=q.text;
 
-  document.getElementById('question-text').innerHTML = q.text;
-
-  const optEl = document.getElementById('options-list');
-  optEl.innerHTML = '';
-  Object.entries(q.options).forEach(([letter, text]) => {
-    const sel = state.userAnswers[idx] === letter;
-    const item = document.createElement('div');
-    item.className = 'option-item' + (sel?' selected':'');
-    item.onclick = () => { state.userAnswers[idx] = letter; renderQuestion(idx); };
-    item.innerHTML = `<div class="option-letter">${letter}</div><div class="option-text">${text}</div>`;
+  const optEl=document.getElementById('options-list');
+  optEl.innerHTML='';
+  Object.entries(q.options).forEach(([letter,text])=>{
+    const sel=S.userAnswers[idx]===letter;
+    const item=document.createElement('div');
+    item.className='option-item'+(sel?' selected':'');
+    item.onclick=()=>{ S.userAnswers[idx]=letter; renderQuestion(idx); };
+    item.innerHTML=`<div class="option-letter">${letter}</div><div class="option-text">${text}</div>`;
     optEl.appendChild(item);
   });
 
-  document.getElementById('btn-prev').disabled = idx === 0;
-  document.getElementById('btn-next').disabled = idx === state.questions.length - 1;
+  document.getElementById('btn-prev').disabled=idx===0;
+  document.getElementById('btn-next').disabled=idx===S.questions.length-1;
 
-  if (state.currentExamType === 'skd') {
-    document.querySelectorAll('.section-tab').forEach(t =>
-      t.classList.toggle('active', t.textContent === q.subtest));
+  if (S.examType==='skd') {
+    document.querySelectorAll('.section-tab').forEach(t=>t.classList.toggle('active',t.textContent===q.subtest));
   }
-
   updateNavGrid();
-  const activeBtn = document.getElementById('soal-btn-' + idx);
-  if (activeBtn) activeBtn.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  const ab=document.getElementById('soal-btn-'+idx);
+  if (ab) ab.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function navigate(dir) {
-  const next = state.currentQuestion + dir;
-  if (next >= 0 && next < state.questions.length) renderQuestion(next);
+  const next=S.currentQ+dir;
+  if (next>=0 && next<S.questions.length) renderQuestion(next);
 }
-
 function toggleFlag() {
-  const idx = state.currentQuestion;
-  if (state.flaggedQuestions.has(idx)) state.flaggedQuestions.delete(idx);
-  else state.flaggedQuestions.add(idx);
-  renderQuestion(idx);
+  const i=S.currentQ;
+  if (S.flagged.has(i)) S.flagged.delete(i); else S.flagged.add(i);
+  renderQuestion(i);
 }
 
 // =============================================================
@@ -924,76 +800,72 @@ function toggleFlag() {
 // =============================================================
 function submitExam() {
   closeModal();
-  clearInterval(state.timerInterval);
+  clearInterval(S.timerInterval);
+  const {questions:qs, userAnswers:ua, examType:et} = S;
 
-  const { questions, userAnswers, currentExamType } = state;
-
-  if (currentExamType === 'skd') {
-    let skor = { TWK:0, TIU:0, TKP:0 };
-    const pg = { TWK:65, TIU:80, TKP:166 };
-    questions.forEach((q, idx) => {
-      const jaw = userAnswers[idx];
-      if (q.tipe === 'tkp') {
-        if (jaw && q.nilaiOpsi?.[jaw]) skor.TKP += q.nilaiOpsi[jaw];
-      } else {
-        if (jaw === q.kunciJawaban) skor[q.subtest] += 5;
-      }
+  if (et==='skd') {
+    let skor={TWK:0,TIU:0,TKP:0};
+    const pg={TWK:65,TIU:80,TKP:166};
+    qs.forEach((q,i)=>{
+      const jaw=ua[i];
+      if (q.tipe==='tkp'){ if(jaw&&q.nilaiOpsi?.[jaw]) skor.TKP+=q.nilaiOpsi[jaw]; }
+      else if (jaw===q.kunciJawaban) skor[q.subtest]=(skor[q.subtest]||0)+5;
     });
-    const total = skor.TWK + skor.TIU + skor.TKP;
-    const lulusAll = skor.TWK>=pg.TWK && skor.TIU>=pg.TIU && skor.TKP>=pg.TKP;
+    const total=skor.TWK+skor.TIU+skor.TKP;
+    const lulusAll=skor.TWK>=pg.TWK&&skor.TIU>=pg.TIU&&skor.TKP>=pg.TKP;
 
-    document.getElementById('total-score').textContent = total;
-    document.getElementById('score-max').textContent   = 'dari skor maksimal 550';
-    document.getElementById('skd-breakdown').style.display = 'block';
-    document.getElementById('skb-info').style.display      = 'none';
+    document.getElementById('total-score').textContent=total;
+    document.getElementById('score-max').textContent='dari skor maksimal 550';
+    document.getElementById('skd-breakdown').style.display='block';
+    document.getElementById('skb-info').style.display='none';
 
-    document.getElementById('skd-cards').innerHTML = [
+    document.getElementById('skd-cards').innerHTML=[
       {k:'TWK',name:'Tes Wawasan Kebangsaan',   color:'#003580'},
       {k:'TIU',name:'Tes Intelejensi Umum',      color:'#0051c8'},
       {k:'TKP',name:'Tes Karakteristik Pribadi', color:'#1a9e4e'},
-    ].map(sub => {
-      const lulus = skor[sub.k] >= pg[sub.k];
+    ].map(sub=>{
+      const lulus=(skor[sub.k]||0)>=pg[sub.k];
+      const soalCount=qs.filter(q=>q.subtest===sub.k).length;
       return `<div class="skor-card" style="border-top-color:${sub.color}">
         <div class="skor-card-label">${sub.k}</div>
         <div class="skor-card-name">${sub.name}</div>
-        <div class="skor-card-value" style="color:${sub.color}">${skor[sub.k]}</div>
-        <div class="skor-card-pg">Passing Grade: <strong>${pg[sub.k]}</strong></div>
+        <div class="skor-card-value" style="color:${sub.color}">${skor[sub.k]||0}</div>
+        <div class="skor-card-pg">${soalCount} soal dikerjakan · PG: <strong>${pg[sub.k]}</strong></div>
         <span class="status-badge ${lulus?'lulus':'tidak-lulus'}">${lulus?'✅ Lulus PG':'❌ Tidak Lulus PG'}</span>
       </div>`;
     }).join('');
 
-    const ob = document.getElementById('overall-status-box');
-    ob.style.borderLeft = `5px solid ${lulusAll?'var(--green)':'var(--red)'}`;
-    document.getElementById('overall-icon').textContent       = lulusAll ? '🏆' : '📋';
-    document.getElementById('overall-status-title').textContent = lulusAll ? 'Selamat! Anda LULUS Passing Grade SKD' : 'Belum Lulus Passing Grade SKD';
-    document.getElementById('overall-status-desc').textContent  = lulusAll
-      ? 'Semua nilai subtes memenuhi passing grade. Anda berhak mengikuti seleksi tahap berikutnya.'
-      : 'Satu atau lebih nilai subtes belum mencapai passing grade. Terus berlatih!';
-    document.getElementById('overall-status-title').style.color = lulusAll?'var(--green)':'var(--red)';
+    const ob=document.getElementById('overall-status-box');
+    ob.style.borderLeft=`5px solid ${lulusAll?'var(--green)':'var(--red)'}`;
+    document.getElementById('overall-icon').textContent=lulusAll?'🏆':'📋';
+    document.getElementById('overall-status-title').textContent=lulusAll?'Selamat! Lulus Passing Grade SKD':'Belum Lulus Passing Grade SKD';
+    document.getElementById('overall-status-desc').textContent=lulusAll
+      ?'Semua nilai subtes memenuhi passing grade.'
+      :'Satu atau lebih subtes belum mencapai passing grade. Terus berlatih!';
+    document.getElementById('overall-status-title').style.color=lulusAll?'var(--green)':'var(--red)';
 
   } else {
-    let total = 0;
-    questions.forEach((q,idx) => { if (userAnswers[idx]===q.kunciJawaban) total+=5; });
-    document.getElementById('total-score').textContent = total;
-    document.getElementById('score-max').textContent   = `dari skor maksimal ${questions.length*5}`;
-    document.getElementById('skd-breakdown').style.display = 'none';
-    document.getElementById('skb-info').style.display      = 'block';
-    document.getElementById('skb-desc-text').textContent =
-      `Skor SKB Akuntansi Anda: ${total} dari ${questions.length*5} poin. Skor ini diakumulasi dengan SKD untuk penetapan peringkat akhir.`;
+    let total=0;
+    qs.forEach((q,i)=>{ if(ua[i]===q.kunciJawaban) total+=5; });
+    document.getElementById('total-score').textContent=total;
+    document.getElementById('score-max').textContent=`dari skor maksimal ${qs.length*5} (${qs.length} soal dikerjakan)`;
+    document.getElementById('skd-breakdown').style.display='none';
+    document.getElementById('skb-info').style.display='block';
+    document.getElementById('skb-desc-text').textContent=
+      `Skor SKB Akuntansi: ${total} dari ${qs.length*5} poin. Akan diakumulasi dengan SKD untuk penetapan peringkat akhir.`;
   }
 
-  // Review soal
-  document.getElementById('review-body').innerHTML = questions.map((q,idx) => {
-    const jaw = userAnswers[idx];
-    let cls='skip', txt='Tidak dijawab';
-    if (jaw) {
-      if (q.tipe==='tkp') { cls='correct'; txt=`${jaw} (Skor: ${q.nilaiOpsi?.[jaw]||0})`; }
-      else if (jaw===q.kunciJawaban) { cls='correct'; txt=`${jaw} ✓ Benar`; }
-      else { cls='wrong'; txt=`${jaw} ✗ (Kunci: ${q.kunciJawaban})`; }
+  document.getElementById('review-body').innerHTML=qs.map((q,i)=>{
+    const jaw=ua[i];
+    let cls='skip',txt='Tidak dijawab';
+    if(jaw){
+      if(q.tipe==='tkp'){cls='correct';txt=`${jaw} (Skor: ${q.nilaiOpsi?.[jaw]||0})`;}
+      else if(jaw===q.kunciJawaban){cls='correct';txt=`${jaw} ✓ Benar`;}
+      else{cls='wrong';txt=`${jaw} ✗ (Kunci: ${q.kunciJawaban})`;}
     }
     return `<div class="review-item">
-      <div class="review-no">${idx+1}.</div>
-      <div class="review-q">${q.text.substring(0,90)}${q.text.length>90?'...':''}</div>
+      <div class="review-no">${i+1}.</div>
+      <div class="review-q">[${q.subtest}] ${q.text.substring(0,85)}${q.text.length>85?'...':''}</div>
       <div class="review-ans ${cls}">${txt}</div>
     </div>`;
   }).join('');
@@ -1001,20 +873,13 @@ function submitExam() {
   showView('hasil');
 }
 
-function toggleReview() {
-  const body = document.getElementById('review-body');
-  const open = body.classList.toggle('open');
-  document.getElementById('review-toggle-icon').textContent = open?'▲':'▼';
+function toggleReview(){
+  const body=document.getElementById('review-body');
+  document.getElementById('review-toggle-icon').textContent=body.classList.toggle('open')?'▲':'▼';
 }
-
-function goToMenu() {
-  clearInterval(state.timerInterval);
-  state = {
-    currentExamType:null, questions:[], userAnswers:{},
-    flaggedQuestions:new Set(), currentQuestion:0,
-    timeLeft:0, timerInterval:null,
-    subtestQuestions:{}, subtestBatchDone:{}, subtestForceNew:{},
-  };
+function goToMenu(){
+  clearInterval(S.timerInterval);
+  S={examType:null,questions:[],userAnswers:{},flagged:new Set(),currentQ:0,timeLeft:0,timerInterval:null,batchDone:{},currentSubtest:null,generating:false};
   showView('menu');
 }
 </script>
