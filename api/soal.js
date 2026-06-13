@@ -14,10 +14,9 @@ function cors(res) {
 // ─── Model fallback chain ──────────────────────────────────────
 const MODELS = [
   'llama-3.3-70b-versatile',
-  'llama-3.1-70b-versatile',
   'llama-3.1-8b-instant',
-  'llama3-70b-8192',
-  'llama3-8b-8192',
+  'mixtral-8x7b-32768',
+  'gemma2-9b-it',
 ];
 
 // ─── System Prompts ────────────────────────────────────────────
@@ -142,7 +141,9 @@ async function generate(groq, subtest, count) {
   const models = process.env.GROQ_MODEL
     ? [process.env.GROQ_MODEL, ...MODELS.filter(m => m !== process.env.GROQ_MODEL)]
     : MODELS;
+  
   let lastErr = null;
+  
   for (const model of models) {
     try {
       console.log(`Trying: ${model}`);
@@ -152,21 +153,37 @@ async function generate(groq, subtest, count) {
           { role:'system', content: PROMPTS[subtest] },
           { role:'user',   content: `Buat tepat ${count} soal ${subtest} dengan topik bervariasi. Output HANYA array JSON valid.` },
         ],
-        temperature: 0.7, max_tokens: 6000,
+        temperature: 0.7, 
+        max_tokens: 6000,
         response_format: { type:'json_object' },
       });
+      
       const raw = res.choices?.[0]?.message?.content || '';
       if (!raw) throw new Error('Empty response');
+      
       const questions = parseGroqJSON(raw);
       if (!questions.length) throw new Error('Empty array');
+      
       console.log(`OK: ${model} → ${questions.length} soal`);
       return { questions, model };
+      
     } catch(err) {
-      if ([429,413,503].includes(err.status)) { lastErr=err; continue; }
-      throw err;
+      console.warn(`Gagal menggunakan ${model}: ${err.message}`);
+      
+      // Jika error adalah unauthorized/API Key salah, langsung hentikan
+      if (err.status === 401) {
+        throw err;
+      }
+      
+      // Simpan error terakhir dan lanjutkan ke model berikutnya di array
+      // Mencakup error 400 (model decommissioned), 429 (rate limit), 5xx (server error)
+      lastErr = err; 
+      continue;
     }
   }
-  throw new Error('Semua model tidak tersedia: ' + lastErr?.message);
+  
+  // Jika loop selesai tapi tidak ada yang berhasil, lempar error terakhir
+  throw new Error('Semua model gagal memproses permintaan: ' + (lastErr?.message || 'Unknown error'));
 }
 
 // ─── Main Handler ──────────────────────────────────────────────
