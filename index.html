@@ -269,15 +269,27 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 .lb-loading{text-align:center;padding:32px;color:var(--textsub);font-size:.88rem}
 
 @media(max-width:768px){
-  .exam-layout{grid-template-columns:1fr}
-  .nav-panel{border-left:none;border-top:2px solid var(--border);height:auto;position:static;order:-1}
-  .nav-bottom{width:100%}
+  .exam-layout{grid-template-columns:1fr;display:flex;flex-direction:column}
+  /* Soal di atas, nav panel di bawah */
+  .question-panel{order:1;padding:16px 14px 120px}
+  .nav-panel{order:2;border-left:none;border-top:2px solid var(--border);height:auto;position:static}
+  .nav-bottom{width:100%;padding:8px 10px;gap:6px}
   .exam-topbar{position:static}
   .soal-grid{grid-template-columns:repeat(7,1fr)}
+  /* Nav bottom mobile — semua tombol muat */
+  .btn-nav{padding:8px 10px;font-size:.78rem}
+  .btn-add-soal{padding:8px 10px;font-size:.76rem}
+  .btn-finish{padding:7px 12px;font-size:.78rem}
+  /* Timer lebih kecil di mobile */
+  .timer-value{font-size:1.1rem}
+  .exam-topbar{flex-wrap:wrap;gap:8px;padding:8px 14px}
 }
 @media(max-width:480px){
   .soal-grid{grid-template-columns:repeat(6,1fr)}
-  .question-panel{padding:16px 13px 120px}
+  .question-panel{padding:14px 12px 130px}
+  .nav-bottom{padding:6px 8px;gap:4px}
+  .btn-nav{padding:7px 8px;font-size:.74rem}
+  .btn-add-soal{font-size:.72rem;padding:7px 8px}
 }
 </style>
 </head>
@@ -499,8 +511,8 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
         <div class="legend-item"><div class="legend-dot f"></div>Ragu-ragu</div>
         <div class="legend-item"><div class="legend-dot c"></div>Soal aktif</div>
       </div>
-      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-        <div style="font-size:.72rem;font-weight:700;color:var(--textsub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Generate Ulang</div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)" id="regen-panel">
+        <div style="font-size:.72rem;font-weight:700;color:var(--textsub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🔄 Generate Ulang Soal</div>
         <select id="select-regen-subtest" style="width:100%;padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:.78rem;margin-bottom:6px;font-family:inherit">
           <option value="">-- Pilih Subtest --</option>
         </select>
@@ -750,56 +762,66 @@ function goToStep2() {
     step2Title.textContent = 'Pilih Subtest Awal SKD';
     step2Desc.textContent  = `Halo ${nama}! Mulai dari subtest mana?`;
     btnsEl.innerHTML = `
-      <div style="font-size:.75rem;font-weight:700;color:var(--textsub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Pilih Sumber Soal:</div>
-
-      <div style="background:var(--light);border-radius:10px;padding:12px;margin-bottom:10px">
-        <div style="font-size:.78rem;font-weight:700;color:var(--blue);margin-bottom:8px">📦 Dari Database (Soal Tersimpan)</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="exam-select-btn" style="flex:1;min-width:120px" onclick="startFromModal('skd','TWK','db')">
-            <span class="btn-icon">📝</span>
-            <div class="btn-info"><div class="btn-title">TWK</div><div class="btn-sub">dari database</div></div>
-          </button>
-          <button class="exam-select-btn" style="flex:1;min-width:120px" onclick="startFromModal('skd','TIU','db')">
-            <span class="btn-icon">🧮</span>
-            <div class="btn-info"><div class="btn-title">TIU</div><div class="btn-sub">dari database</div></div>
-          </button>
-          <button class="exam-select-btn" style="flex:1;min-width:120px" onclick="startFromModal('skd','TKP','db')">
-            <span class="btn-icon">🤝</span>
-            <div class="btn-info"><div class="btn-title">TKP</div><div class="btn-sub">dari database</div></div>
-          </button>
-        </div>
+      <div style="font-size:.72rem;color:var(--textsub);margin-bottom:10px;line-height:1.5">
+        Pilih subtest dan sumber soal. <strong>Database</strong> = soal tersimpan (cepat). <strong>AI</strong> = generate soal baru.
       </div>
-
-      <div style="background:#fff8f0;border-radius:10px;padding:12px;border:1px solid #fcd9b0">
-        <div style="font-size:.78rem;font-weight:700;color:var(--red);margin-bottom:8px">🤖 Generate Soal Baru (AI)</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="exam-select-btn" style="flex:1;min-width:120px;border-color:var(--red)" onclick="startFromModal('skd','TWK','generate')">
-            <span class="btn-icon">📝</span>
-            <div class="btn-info"><div class="btn-title">TWK</div><div class="btn-sub">generate baru</div></div>
-          </button>
-          <button class="exam-select-btn" style="flex:1;min-width:120px;border-color:var(--red)" onclick="startFromModal('skd','TIU','generate')">
-            <span class="btn-icon">🧮</span>
-            <div class="btn-info"><div class="btn-title">TIU</div><div class="btn-sub">generate baru</div></div>
-          </button>
-          <button class="exam-select-btn" style="flex:1;min-width:120px;border-color:var(--red)" onclick="startFromModal('skd','TKP','generate')">
-            <span class="btn-icon">🤝</span>
-            <div class="btn-info"><div class="btn-title">TKP</div><div class="btn-sub">generate baru</div></div>
-          </button>
+      ${[
+        {key:'TWK', icon:'📝', label:'TWK — Tes Wawasan Kebangsaan', sub:'30 soal'},
+        {key:'TIU', icon:'🧮', label:'TIU — Tes Intelejensi Umum',   sub:'35 soal'},
+        {key:'TKP', icon:'🤝', label:'TKP — Tes Karakteristik Pribadi', sub:'45 soal'},
+      ].map(st => `
+        <div style="background:var(--light);border-radius:10px;padding:12px;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span style="font-size:1.2rem">${st.icon}</span>
+            <div>
+              <div style="font-weight:700;font-size:.88rem">${st.label}</div>
+              <div style="font-size:.72rem;color:var(--textsub)">${st.sub}</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <button onclick="startFromModal('skd','${st.key}','db')"
+              style="padding:8px;border:1.5px solid var(--blue2);background:#fff;border-radius:7px;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--blue2);transition:all .15s"
+              onmouseover="this.style.background='var(--blue2)';this.style.color='#fff'"
+              onmouseout="this.style.background='#fff';this.style.color='var(--blue2)'">
+              📦 Database
+            </button>
+            <button onclick="startFromModal('skd','${st.key}','generate')"
+              style="padding:8px;border:1.5px solid var(--red);background:#fff;border-radius:7px;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--red);transition:all .15s"
+              onmouseover="this.style.background='var(--red)';this.style.color='#fff'"
+              onmouseout="this.style.background='#fff';this.style.color='var(--red)'">
+              🤖 Generate AI
+            </button>
+          </div>
         </div>
-      </div>`;
+      `).join('')}`;
   } else {
     step2Title.textContent = 'Konfirmasi SKB Akuntansi';
     step2Desc.textContent  = `Halo ${nama}! Klik mulai untuk memulai SKB Akuntansi.`;
     btnsEl.innerHTML = `
-      <div style="font-size:.75rem;font-weight:700;color:var(--textsub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Pilih Sumber Soal:</div>
-      <button class="exam-select-btn skb" onclick="startFromModal('skb','SKB','db')">
-        <span class="btn-icon">📦</span>
-        <div class="btn-info"><div class="btn-title">Dari Database</div><div class="btn-sub">Pakai soal yang sudah tersimpan</div></div>
-      </button>
-      <button class="exam-select-btn skb" style="border-color:var(--red)" onclick="startFromModal('skb','SKB','generate')">
-        <span class="btn-icon">🤖</span>
-        <div class="btn-info"><div class="btn-title">Generate Soal Baru</div><div class="btn-sub">Buat soal baru dari AI</div></div>
-      </button>`;
+      <div style="font-size:.72rem;color:var(--textsub);margin-bottom:10px">
+        Pilih sumber soal SKB Akuntansi (100 soal · Timer 90 menit).
+      </div>
+      <div style="background:var(--light);border-radius:10px;padding:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:1.2rem">📊</span>
+          <div><div style="font-weight:700;font-size:.88rem">SKB — Kompetensi Bidang Akuntansi</div>
+          <div style="font-size:.72rem;color:var(--textsub)">100 soal · Akuntansi Pemerintahan, Perpajakan, Audit</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <button onclick="startFromModal('skb','SKB','db')"
+            style="padding:8px;border:1.5px solid var(--green);background:#fff;border-radius:7px;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--green)"
+            onmouseover="this.style.background='var(--green)';this.style.color='#fff'"
+            onmouseout="this.style.background='#fff';this.style.color='var(--green)'">
+            📦 Database
+          </button>
+          <button onclick="startFromModal('skb','SKB','generate')"
+            style="padding:8px;border:1.5px solid var(--red);background:#fff;border-radius:7px;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--red)"
+            onmouseover="this.style.background='var(--red)';this.style.color='#fff'"
+            onmouseout="this.style.background='#fff';this.style.color='var(--red)'">
+            🤖 Generate AI
+          </button>
+        </div>
+      </div>`;
   }
 
   document.getElementById('modal-step1').style.display = 'none';
@@ -891,25 +913,38 @@ async function quickStart(examType, startSubtest, mode = 'db') {
 
   showLoading('Memeriksa soal di database...');
 
-  // ── Load semua batch yang ada di DB ─────────────────────────
+  // ── Load semua batch secara PARALLEL (lebih cepat) ──────────
+  setLoadingMsg('Memeriksa soal di database...');
+  const loadPromises = [];
   for (const st of cfg.subtests) {
     const batches = Math.ceil(st.total / BATCH);
     for (let b = 0; b < batches; b++) {
-      try {
-        setLoadingMsg(`Memeriksa ${st.key} batch ${b+1}/${batches}...`);
-        const qs = await fetchSoal(examType, st.key, BATCH, b, false);
-        if (qs && qs.length) {
-          qs.forEach(q => { q.id = globalId++; q.nilai = q.nilai||{benar:5,salah:0}; });
-          allQuestions.push(...qs);
-          S.batchDone[st.key] = b + 1;
-        } else {
-          break; // batch ini belum ada, stop subtest ini
-        }
-      } catch(e) {
-        break; // tidak ada di DB
-      }
+      loadPromises.push(
+        fetchSoal(examType, st.key, BATCH, b, false)
+          .then(qs => ({ st: st.key, b, qs }))
+          .catch(() => ({ st: st.key, b, qs: null }))
+      );
     }
   }
+  const results = await Promise.all(loadPromises);
+
+  // Susun soal berurutan per subtest per batch
+  const bySubtest = {};
+  cfg.subtests.forEach(st => { bySubtest[st.key] = []; });
+  results.forEach(({ st, b, qs }) => {
+    if (qs && qs.length) bySubtest[st][b] = qs;
+  });
+
+  cfg.subtests.forEach(st => {
+    const batches = Math.ceil(st.total / BATCH);
+    for (let b = 0; b < batches; b++) {
+      const qs = bySubtest[st.key][b];
+      if (!qs) break; // stop di gap pertama
+      qs.forEach(q => { q.id = globalId++; q.nilai = q.nilai||{benar:5,salah:0}; });
+      allQuestions.push(...qs);
+      S.batchDone[st.key] = b + 1;
+    }
+  });
 
   // ── Jika DB kosong dan mode generate → generate batch pertama ─
   if (allQuestions.length === 0) {
@@ -1082,66 +1117,132 @@ function updateTimerDisplay() {
 // RENDER QUESTION
 // =============================================================
 function renderNavGrid() {
-  const grid=document.getElementById('soal-grid');
-  const tabs=document.getElementById('section-tabs');
-  const statusEl=document.getElementById('subtest-status');
+  const grid    = document.getElementById('soal-grid');
+  const tabs    = document.getElementById('section-tabs');
+  const statusEl= document.getElementById('subtest-status');
   grid.innerHTML=''; tabs.innerHTML=''; statusEl.innerHTML='';
 
   const cfg = EXAM_CFG[S.examType];
 
-  // Section tabs
-  const subtestsPresent = [...new Set(S.questions.map(q=>q.subtest))];
-  subtestsPresent.forEach((st,i)=>{
-    const btn=document.createElement('button');
-    btn.className='section-tab'+(i===0?' active':'');
-    btn.textContent=st;
-    btn.onclick=()=>{ const fi=S.questions.findIndex(q=>q.subtest===st); if(fi!==-1) renderQuestion(fi); };
+  // Section tabs — semua subtest dari config (bukan hanya yang sudah ada)
+  cfg.subtests.forEach((st, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'section-tab' + (i===0?' active':'');
+    btn.textContent = st.key;
+    btn.onclick = () => {
+      // Cari soal pertama subtest ini di questions array
+      // Posisi globalnya = sum total subtest sebelumnya
+      let offset = 0;
+      for (let j=0; j<i; j++) offset += cfg.subtests[j].total;
+      // Kalau ada soal di posisi itu, navigate ke sana
+      if (offset < S.questions.length) renderQuestion(offset);
+    };
     tabs.appendChild(btn);
   });
 
-  // Status subtest di nav panel
-  cfg.subtests.forEach(st=>{
-    const collected=S.questions.filter(q=>q.subtest===st.key).length;
-    const isDone=collected>=st.total;
-    const row=document.createElement('div');
-    row.className='subtest-status-row';
-    row.innerHTML=`<span class="subtest-status-label">${st.key}</span>
+  // Status per subtest
+  cfg.subtests.forEach(st => {
+    const collected = S.questions.filter(q => q.subtest===st.key).length;
+    const isDone    = collected >= st.total;
+    const row = document.createElement('div');
+    row.className = 'subtest-status-row';
+    row.innerHTML = `<span class="subtest-status-label">${st.key}</span>
       <span class="subtest-status-val ${isDone?'done':''}">${collected}/${st.total}${isDone?' ✓':''}</span>`;
     statusEl.appendChild(row);
   });
 
-  // Soal grid — tampilkan placeholder untuk soal yang belum di-generate
-  const totalExpected = cfg.subtests.reduce((a,st)=>a+st.total,0);
-  for (let i=0; i<totalExpected; i++) {
-    const btn=document.createElement('button');
-    if (i < S.questions.length) {
-      btn.className='soal-btn';
-      btn.id='soal-btn-'+i;
-      btn.textContent=i+1;
-      btn.onclick=()=>renderQuestion(i);
-    } else {
-      btn.className='soal-btn placeholder';
-      btn.textContent=i+1;
-      btn.title='Belum di-generate';
+  // Grid kotak soal — urut per subtest, termasuk placeholder
+  // Setiap subtest occupies slot tetap sesuai total-nya
+  let globalSlot = 0;
+
+  cfg.subtests.forEach(st => {
+    const stQuestions = S.questions.filter(q => q.subtest === st.key);
+
+    for (let i = 0; i < st.total; i++) {
+      const btn      = document.createElement('button');
+      const slotNum  = globalSlot + i;         // nomor slot global (0-based)
+      const displayN = globalSlot + i + 1;     // nomor tampil (1-based)
+      const q        = stQuestions[i];          // soal di posisi ini (bisa undefined)
+
+      if (q) {
+        // Soal sudah ada — cari index aslinya di S.questions
+        const qIdx = S.questions.indexOf(q);
+        btn.className = 'soal-btn';
+        btn.id        = 'soal-slot-' + slotNum;
+        btn.textContent = displayN;
+        btn.onclick   = () => renderQuestion(qIdx);
+        // Warna berdasarkan status jawaban
+        if (S.flagged.has(qIdx))            btn.classList.add('flagged');
+        else if (S.userAnswers[qIdx] !== undefined) btn.classList.add('answered');
+        if (qIdx === S.currentQ)            btn.classList.add('current');
+      } else {
+        btn.className   = 'soal-btn placeholder';
+        btn.textContent = displayN;
+        btn.title       = `${st.key} soal ${i+1} — belum di-generate`;
+      }
+      grid.appendChild(btn);
+      globalSlot++;
     }
-    grid.appendChild(btn);
-  }
+    globalSlot = 0; // reset — sudah pakai offset per subtest di atas
+    // Sebenarnya globalSlot harus akumulatif:
+  });
+
+  // Hitung ulang globalSlot dengan benar (patch di atas ada bug)
+  grid.innerHTML = ''; // clear dan render ulang
+  let gSlot = 0;
+  cfg.subtests.forEach(st => {
+    const stQ = S.questions.filter(q => q.subtest === st.key);
+    for (let i = 0; i < st.total; i++) {
+      const btn   = document.createElement('button');
+      const dispN = gSlot + 1;
+      const q     = stQ[i];
+      if (q) {
+        const qIdx = S.questions.indexOf(q);
+        btn.className   = 'soal-btn';
+        btn.id          = 'soal-slot-' + gSlot;
+        btn.textContent = dispN;
+        btn.onclick     = () => renderQuestion(qIdx);
+        if (S.flagged.has(qIdx))                    btn.classList.add('flagged');
+        else if (S.userAnswers[qIdx] !== undefined)  btn.classList.add('answered');
+        if (qIdx === S.currentQ)                    btn.classList.add('current');
+      } else {
+        btn.className   = 'soal-btn placeholder';
+        btn.textContent = dispN;
+        btn.title       = `${st.key} soal ${i+1} — belum di-generate`;
+      }
+      grid.appendChild(btn);
+      gSlot++;
+    }
+  });
 
   updateNavGrid();
 }
 
 function updateNavGrid() {
-  const total=S.questions.length, ans=Object.keys(S.userAnswers).length;
-  document.getElementById('progress-text').textContent=ans+'/'+total;
-  document.getElementById('progress-bar').style.width=total>0?(ans/total*100)+'%':'0%';
+  const total = S.questions.length;
+  const ans   = Object.keys(S.userAnswers).length;
+  document.getElementById('progress-text').textContent = ans + '/' + total;
+  document.getElementById('progress-bar').style.width  = total>0 ? (ans/total*100)+'%' : '0%';
 
-  S.questions.forEach((_,i)=>{
-    const btn=document.getElementById('soal-btn-'+i);
-    if (!btn) return;
-    btn.className='soal-btn';
-    if (S.flagged.has(i)) btn.classList.add('flagged');
-    else if (S.userAnswers[i]!==undefined) btn.classList.add('answered');
-    if (i===S.currentQ) btn.classList.add('current');
+  // Re-render kotak berdasarkan slot (bukan index questions array)
+  const cfg = EXAM_CFG[S.examType];
+  if (!cfg) return;
+  let gSlot = 0;
+  cfg.subtests.forEach(st => {
+    const stQ = S.questions.filter(q => q.subtest === st.key);
+    for (let i = 0; i < st.total; i++) {
+      const btn = document.getElementById('soal-slot-' + gSlot);
+      if (!btn) { gSlot++; continue; }
+      const q   = stQ[i];
+      if (q) {
+        const qIdx = S.questions.indexOf(q);
+        btn.className = 'soal-btn';
+        if (S.flagged.has(qIdx))                    btn.classList.add('flagged');
+        else if (S.userAnswers[qIdx] !== undefined)  btn.classList.add('answered');
+        if (qIdx === S.currentQ)                    btn.classList.add('current');
+      }
+      gSlot++;
+    }
   });
 }
 
@@ -1201,8 +1302,23 @@ function renderQuestion(idx) {
     document.querySelectorAll('.section-tab').forEach(t=>t.classList.toggle('active',t.textContent===q.subtest));
   }
   updateNavGrid();
-  const ab=document.getElementById('soal-btn-'+idx);
-  if (ab) ab.scrollIntoView({behavior:'smooth',block:'nearest'});
+  // Cari slot button untuk soal ini
+  const cfg2 = EXAM_CFG[S.examType];
+  if (cfg2) {
+    let gSlot2 = 0;
+    let foundSlot = -1;
+    cfg2.subtests.forEach(st => {
+      const stQ2 = S.questions.filter(q => q.subtest === st.key);
+      for (let i = 0; i < st.total; i++) {
+        if (stQ2[i] && S.questions.indexOf(stQ2[i]) === idx) foundSlot = gSlot2;
+        gSlot2++;
+      }
+    });
+    if (foundSlot >= 0) {
+      const ab = document.getElementById('soal-slot-' + foundSlot);
+      if (ab) ab.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+  }
 }
 
 function navigate(dir) {
