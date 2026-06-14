@@ -81,9 +81,10 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 .exam-card.skb .btn-start{background:linear-gradient(135deg,var(--green),#27ae60)}
 .pg-table-wrap{background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:22px;margin-top:26px}
 .pg-table-wrap h3{font-size:.95rem;font-weight:800;margin-bottom:14px}
-.pg-table{width:100%;border-collapse:collapse;font-size:.82rem}
-.pg-table th{background:var(--blue);color:#fff;padding:9px 13px;text-align:left;font-weight:600}
-.pg-table td{padding:8px 13px;border-bottom:1px solid var(--border);color:var(--textsub)}
+.pg-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pg-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:420px}
+.pg-table th{background:var(--blue);color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:.76rem;white-space:nowrap}
+.pg-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--textsub);font-size:.78rem}
 .pg-table tr:last-child td{border-bottom:none}
 .pg-table tr:hover td{background:var(--light)}
 .site-footer{background:var(--blue);color:rgba(255,255,255,.7);text-align:center;padding:18px;font-size:.78rem;margin-top:36px}
@@ -346,7 +347,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
   </div>
   <div class="navbar-right">
     <div id="navbar-date" style="font-size:.8rem;opacity:.8"></div>
-    <div class="navbar-user">👤 Peserta</div>
+    <div class="navbar-user">👤 <span id="navbar-nama">Peserta</span></div>
   </div>
 </nav>
 
@@ -976,6 +977,9 @@ Klik "Generate Soal Baru" untuk membuat soal pertama kali.`);
   hideLoading();
   showView('ujian');
   document.getElementById('exam-type-label').textContent = examType.toUpperCase();
+  // Tampilkan nama peserta di navbar
+  const namaNavEl = document.getElementById('navbar-nama');
+  if (namaNavEl && S.namaPeserta) namaNavEl.textContent = S.namaPeserta;
   renderNavGrid();
   renderQuestion(0);
   startTimer();
