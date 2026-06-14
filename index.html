@@ -92,7 +92,7 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 
 /* ═══ VIEW UJIAN ═════════════════════════════════════════════ */
 #view-ujian{min-height:calc(100vh - 58px)}
-.exam-topbar{background:#fff;border-bottom:2px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;position:sticky;top:58px;z-index:90;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.exam-topbar{background:#fff;border-bottom:2px solid var(--border);padding:8px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;position:sticky;top:58px;z-index:90;box-shadow:0 2px 6px rgba(0,0,0,.06)}
 .exam-info-type{font-size:.7rem;font-weight:700;letter-spacing:1px;color:var(--blue2);text-transform:uppercase}
 .exam-info-section{font-size:.97rem;font-weight:800}
 .timer-box{display:flex;align-items:center;gap:8px;background:var(--blue);color:#fff;border-radius:10px;padding:7px 16px;transition:background .5s}
@@ -104,23 +104,35 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 .btn-finish{background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.83rem;font-weight:700;cursor:pointer}
 .btn-finish:hover{opacity:.85}
 .exam-layout{display:grid;grid-template-columns:1fr 290px;min-height:calc(100vh - 126px)}
-.question-panel{padding:26px 26px 120px;background:var(--light)}
+.question-panel{padding:22px 26px 120px;background:var(--light);min-height:0}
 .question-header{display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
 .question-number-badge{background:var(--blue);color:#fff;border-radius:8px;padding:5px 13px;font-size:.83rem;font-weight:700}
 .question-subtest-badge{background:#fff;color:var(--blue2);border:1.5px solid var(--blue2);border-radius:8px;padding:4px 11px;font-size:.76rem;font-weight:600}
-.question-flag-badge{margin-left:auto;background:#fff8e1;color:var(--yellow);border:1.5px solid var(--yellow);border-radius:8px;padding:4px 11px;font-size:.76rem;font-weight:600;display:none}
-.question-card{background:#fff;border-radius:12px;padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
-.question-text{font-size:.95rem;line-height:1.85;font-weight:500}
+.question-flag-badge{background:#fff8e1;color:var(--yellow);border:1.5px solid var(--yellow);border-radius:8px;padding:4px 11px;font-size:.76rem;font-weight:600;display:none}
+.btn-show-key{margin-left:auto;background:#fff;color:var(--blue2);border:1.5px solid var(--blue2);border-radius:8px;padding:4px 12px;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-show-key:hover{background:var(--blue2);color:#fff}
+.btn-show-key.revealed{background:var(--blue2);color:#fff}
+.kunci-jawaban-box{background:linear-gradient(135deg,#e8f0fe,#f0f7ff);border:2px solid var(--blue2);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.kunci-letter{width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0}
+.kunci-info{flex:1}
+.kunci-title{font-size:.72rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.kunci-text{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:4px}
+.kunci-pembahasan{font-size:.78rem;color:var(--textsub);line-height:1.6}
+.kunci-ref{font-size:.72rem;color:var(--blue2);margin-top:4px;font-style:italic}
+.question-card{background:#fff;border-radius:12px;padding:22px 24px;box-shadow:var(--shadow);margin-bottom:16px;border:1px solid var(--border)}
+.question-text{font-size:.94rem;line-height:1.9;font-weight:500;color:var(--text)}
 .options-list{display:flex;flex-direction:column;gap:9px}
-.option-item{display:flex;align-items:flex-start;gap:12px;background:#fff;border:2px solid var(--border);border-radius:10px;padding:13px 16px;cursor:pointer;transition:all .15s}
-.option-item:hover{border-color:var(--blue2);background:#f0f4ff;transform:translateX(2px)}
-.option-item.selected{border-color:var(--green);background:#edfaf3}
-.option-letter{width:28px;height:28px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;background:var(--light);color:var(--blue);border:1.5px solid var(--border);transition:all .15s}
+.option-item{display:flex;align-items:flex-start;gap:12px;background:#fff;border:2px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s;user-select:none}
+.option-item:hover{border-color:var(--blue2);background:#f0f4ff;box-shadow:0 2px 8px rgba(0,81,200,.1)}
+.option-item.selected{border-color:var(--green);background:#edfaf3;box-shadow:0 2px 8px rgba(26,158,78,.12)}
+.option-letter{width:30px;height:30px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;background:var(--light);color:var(--blue);border:2px solid var(--border);transition:all .15s}
+.option-item:hover .option-letter{border-color:var(--blue2);color:var(--blue2)}
 .option-item.selected .option-letter{background:var(--green);color:#fff;border-color:var(--green)}
-.option-text{font-size:.88rem;line-height:1.6;padding-top:3px}
+.option-text{font-size:.87rem;line-height:1.65;padding-top:3px;color:var(--text)}
 
 /* Bottom nav bar */
-.nav-bottom{position:fixed;bottom:0;left:0;width:calc(100% - 290px);background:#fff;border-top:2px solid var(--border);padding:10px 20px;display:flex;gap:8px;align-items:center;z-index:80;box-shadow:0 -2px 10px rgba(0,0,0,.08)}
+.nav-bottom{position:fixed;bottom:0;left:0;width:calc(100% - 290px);background:#fff;border-top:1.5px solid var(--border);padding:9px 18px;display:flex;gap:7px;align-items:center;z-index:80;box-shadow:0 -2px 12px rgba(0,0,0,.09)}
 .btn-nav{padding:9px 18px;border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;border:none;transition:all .15s}
 .btn-prev{background:var(--light);color:var(--text);border:1.5px solid var(--border)}
 .btn-prev:hover{background:var(--border)}
@@ -272,15 +284,16 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
 @media(max-width:768px){
   .exam-layout{grid-template-columns:1fr;display:flex;flex-direction:column}
   /* Soal di atas, nav panel di bawah */
-  .question-panel{order:1;padding:16px 14px 120px}
+  .question-panel{order:1;padding:14px 13px 130px}
   .nav-panel{order:2;border-left:none;border-top:2px solid var(--border);height:auto;position:static}
   .nav-bottom{width:100%;padding:8px 10px;gap:6px}
   .exam-topbar{position:static}
   .soal-grid{grid-template-columns:repeat(7,1fr)}
-  /* Nav bottom mobile — semua tombol muat */
-  .btn-nav{padding:8px 10px;font-size:.78rem}
-  .btn-add-soal{padding:8px 10px;font-size:.76rem}
-  .btn-finish{padding:7px 12px;font-size:.78rem}
+  /* Nav bottom mobile — semua tombol muat 1 baris */
+  .btn-nav{padding:7px 9px;font-size:.75rem;min-width:0}
+  .btn-add-soal{padding:7px 9px;font-size:.72rem;min-width:0}
+  .btn-finish{padding:6px 10px;font-size:.75rem}
+  .btn-selesai-final{padding:7px 9px;font-size:.75rem}
   /* Timer lebih kecil di mobile */
   .timer-value{font-size:1.1rem}
   .exam-topbar{flex-wrap:wrap;gap:8px;padding:8px 14px}
@@ -489,7 +502,11 @@ body{font-family:'Inter',sans-serif;background:var(--light);color:var(--text);mi
         <div class="question-number-badge" id="q-number-badge">Soal 1</div>
         <div class="question-subtest-badge" id="q-subtest-badge">TWK</div>
         <div class="question-flag-badge" id="q-flag-badge">🚩 Ragu-ragu</div>
+        <button class="btn-show-key" id="btn-show-key" onclick="toggleKunciJawaban()" title="Lihat kunci jawaban">
+          🔑 Kunci
+        </button>
       </div>
+      <div class="kunci-jawaban-box" id="kunci-jawaban-box" style="display:none"></div>
       <div class="question-card">
         <div class="question-text" id="question-text">Memuat soal...</div>
       </div>
@@ -996,18 +1013,35 @@ function setLoadingMsg(msg) {
 // FETCH SOAL dari Vercel API
 // =============================================================
 async function fetchSoal(examType, subtest, count, batchIndex, forceNew) {
-  const res = await fetch(BASE_URL + '/api/soal', {
-    method:  'POST',
-    headers: { 'Content-Type':'application/json' },
-    body:    JSON.stringify({ examType, subtest, count, batchIndex, forceNew }),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(()=>({}));
-    throw new Error(`API ${res.status}: ${err.error||res.statusText}`);
+  const controller = new AbortController();
+  // DB fetch timeout 8 detik, generate timeout 55 detik
+  const timeout = forceNew ? 55000 : 8000;
+  const timer   = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const res = await fetch(BASE_URL + '/api/soal', {
+      method:  'POST',
+      headers: { 'Content-Type':'application/json' },
+      body:    JSON.stringify({ examType, subtest, count, batchIndex, forceNew }),
+      signal:  controller.signal,
+    });
+    clearTimeout(timer);
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      throw new Error(`API ${res.status}: ${err.error||res.statusText}`);
+    }
+    const data = await res.json();
+    if (!data.success || !Array.isArray(data.questions)) throw new Error('Response tidak valid.');
+    return data.questions;
+  } catch(e) {
+    clearTimeout(timer);
+    if (e.name === 'AbortError') {
+      // Timeout DB = anggap tidak ada, bukan error
+      if (!forceNew) return [];
+      throw new Error('Generate timeout — coba lagi.');
+    }
+    throw e;
   }
-  const data = await res.json();
-  if (!data.success || !Array.isArray(data.questions)) throw new Error('Response tidak valid.');
-  return data.questions;
 }
 
 // =============================================================
@@ -1264,6 +1298,12 @@ function renderQuestion(idx) {
   document.getElementById('btn-flag').classList.toggle('active',S.flagged.has(idx));
   document.getElementById('question-text').innerHTML=q.text;
 
+  // Reset kunci jawaban box saat pindah soal
+  const kBox = document.getElementById('kunci-jawaban-box');
+  const kBtn = document.getElementById('btn-show-key');
+  if (kBox) { kBox.style.display = 'none'; }
+  if (kBtn) { kBtn.classList.remove('revealed'); kBtn.textContent = '🔑 Kunci'; }
+
   const optEl=document.getElementById('options-list');
   optEl.innerHTML='';
   Object.entries(q.options).forEach(([letter,text])=>{
@@ -1323,6 +1363,54 @@ function renderQuestion(idx) {
       if (ab) ab.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
   }
+}
+
+function toggleKunciJawaban() {
+  const q    = S.questions[S.currentQ];
+  const kBox = document.getElementById('kunci-jawaban-box');
+  const kBtn = document.getElementById('btn-show-key');
+  if (!q || !kBox || !kBtn) return;
+
+  if (kBox.style.display !== 'none') {
+    kBox.style.display = 'none';
+    kBtn.classList.remove('revealed');
+    kBtn.textContent = '🔑 Kunci';
+    return;
+  }
+
+  // Bangun konten kunci jawaban
+  let html = '';
+  if (q.tipe === 'tkp') {
+    // TKP: tampilkan semua skor opsi
+    const sorted = Object.entries(q.nilaiOpsi || {}).sort((a,b) => b[1]-a[1]);
+    const best   = sorted[0];
+    html = `
+      <div class="kunci-letter">${best[0]}</div>
+      <div class="kunci-info">
+        <div class="kunci-title">Jawaban Terbaik (Skor ${best[1]})</div>
+        <div class="kunci-text">${best[0]}. ${q.options[best[0]]}</div>
+        <div class="kunci-pembahasan">
+          ${sorted.map(([l,v]) => `<span style="font-weight:700;color:${v===5?'var(--green)':v===4?'var(--blue2)':v<=2?'var(--red)':'var(--yellow)'}">${l}=${v}</span>`).join('  ')}
+          ${q.alasanSkor?.[best[0]] ? '<br/>💡 '+q.alasanSkor[best[0]] : ''}
+        </div>
+      </div>`;
+  } else {
+    const k    = q.kunciJawaban;
+    const kTxt = q.options?.[k] || '';
+    html = `
+      <div class="kunci-letter">${k}</div>
+      <div class="kunci-info">
+        <div class="kunci-title">Kunci Jawaban</div>
+        <div class="kunci-text">${k}. ${kTxt}</div>
+        ${q.pembahasanSingkat ? `<div class="kunci-pembahasan">💡 ${q.pembahasanSingkat}</div>` : ''}
+        ${q.referensi ? `<div class="kunci-ref">📖 ${q.referensi}</div>` : ''}
+      </div>`;
+  }
+
+  kBox.innerHTML = html;
+  kBox.style.display = 'flex';
+  kBtn.classList.add('revealed');
+  kBtn.textContent = '🔑 Tutup';
 }
 
 function navigate(dir) {
